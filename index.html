@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Aashi Momo & Maozhu | Cloud POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Supabase CDN for free instant cloud syncing -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #ea580c;
+      --primary-dark: #c2410c;
+      --primary-light: #ffedd5;
+      --accent: #dc2626;
+      --dark: #0f172a;
+      --bg: #f8fafc;
+      --border: #f1f5f9;
+      --border-dark: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --success: #10b981;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 40px; }
+
+    /* Nav */
+    .navbar {
+      background: white;
+      border-bottom: 1px solid var(--border-dark);
+      padding: 0.85rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .navbar-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-nav {
+      background: var(--bg);
+      border: 1px solid var(--border-dark);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Layout */
+    .main-layout {
+      max-width: 1200px;
+      margin: 1rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    @media (min-width: 960px) {
+      .main-layout { grid-template-columns: 1.35fr 0.85fr; }
+    }
+
+    /* Category Bar */
+    .cat-bar {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+      scrollbar-width: none;
+    }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      padding: 0.55rem 1rem;
+      border-radius: 9999px;
+      background: white;
+      border: 1px solid var(--border-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .cat-pill.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+    }
+
+    /* Menu Cards */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 0.75rem;
+    }
+    .dish-card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 0.9rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .dish-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .dish-card:active { transform: scale(0.97); }
+    .dish-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); line-height: 1.3; }
+    .dish-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .dish-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+    .add-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    /* Side Cards */
+    .glass-card {
+      background: white;
+      border-radius: 20px;
+      border: 1px solid var(--border-dark);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1rem;
+    }
+    .card-header-clean {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .card-header-clean h2 { font-size: 1rem; font-weight: 800; color: var(--dark); }
+
+    /* Order Cart */
+    .order-items { max-height: 260px; overflow-y: auto; }
+    .order-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .order-line-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
+    .order-line-meta { font-size: 0.75rem; color: var(--text-muted); }
+    .counter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      border-radius: 9999px;
+      padding: 2px;
+    }
+    .count-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .summary-bill {
+      border-top: 2px dashed #f1f5f9;
+      padding-top: 1rem;
+      margin-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bill-total-val { font-size: 1.45rem; font-weight: 800; color: var(--dark); }
+
+    .btn-checkout {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.9rem;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-checkout:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+
+    /* Dashboard Metrics */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    .mini-stat {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      border: 1px solid #f1f5f9;
+    }
+    .stat-caption { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
+    .stat-number { font-size: 1.15rem; font-weight: 800; color: var(--dark); margin-top: 2px; }
+
+    .subtabs { display: flex; border-bottom: 1px solid var(--border-dark); margin-bottom: 0.75rem; }
+    .subtab-btn {
+      flex: 1;
+      padding: 0.5rem;
+      background: none;
+      border: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .subtab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .scroll-table { max-height: 200px; overflow-y: auto; font-size: 0.8rem; }
+    .row-record { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f8fafc; }
+
+    /* Modal for Menu Editing & Settings */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-card {
+      background: white;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .modal-body { overflow-y: auto; flex: 1; padding-right: 4px; }
+    .form-group { margin-bottom: 0.85rem; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-dark);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .btn-action-full {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .menu-manager-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.82rem;
+    }
+    .btn-delete {
+      background: #fee2e2;
+      border: none;
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="brand-title">🥟 <span>AASHI MOMO & MAOZHU</span></div>
+      <div class="nav-actions">
+        <button class="btn-nav" onclick="openMenuModal()">⚙️ Edit Menu</button>
+        <button class="btn-nav" onclick="openCloudModal()">☁️ Sync</button>
+        <input type="date" id="date-picker" onchange="changeActiveDate(this.value)" style="border:1px solid var(--border-dark); border-radius:999px; padding:4px 8px; font-size:0.75rem; font-weight:600; outline:none;" />
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-layout">
+    <!-- LEFT: MENU LIST -->
+    <div>
+      <div class="cat-bar" id="category-bar"></div>
+      <div class="menu-grid" id="dish-list"></div>
+    </div>
+
+    <!-- RIGHT: ORDER & DAILY STATS -->
+    <div>
+      <!-- CURRENT TICKET -->
+      <div class="glass-card">
+        <div class="card-header-clean">
+          <h2>Current Order</h2>
+          <button onclick="clearTicket()" style="background:none; border:none; color:var(--accent); font-size:0.75rem; font-weight:700; cursor:pointer;">Clear Ticket</button>
+        </div>
+        <div class="order-items" id="ticket-container">
+          <div style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size: 0.85rem;">🛒 Tap items on the menu to add</div>
+        </div>
+        <div class="summary-bill">
+          <div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Total Amount</div>
+            <div class="bill-total-val">৳ <span id="ticket-price">0</span></div>
+          </div>
+          <span id="ticket-qty-tag" style="background:#f1f5f9; padding: 4px 10px; border-radius:999px; font-size: 0.75rem; font-weight:700;">0 items</span>
+        </div>
+        <button id="record-sale-btn" class="btn-checkout" onclick="confirmOrder()" disabled>Complete Order</button>
+      </div>
+
+      <!-- DAILY PERFORMANCE -->
+      <div class="glass-card">
+        <div class="card-header-clean">
+          <h2>Daily Performance</h2>
+          <span style="font-size:0.75rem; background:var(--primary-light); color:var(--primary); padding:3px 8px; border-radius:999px; font-weight:700;" id="active-date-badge">Today</span>
+        </div>
+        <div class="metric-strip">
+          <div class="mini-stat">
+            <div class="stat-caption">Revenue</div>
+            <div class="stat-number" style="color:var(--success);">৳<span id="metric-revenue">0</span></div>
+          </div>
+          <div class="mini-stat">
+            <div class="stat-caption">Orders</div>
+            <div class="stat-number" id="metric-tickets">0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="stat-caption">Items Sold</div>
+            <div class="stat-number" id="metric-quantity">0</div>
+          </div>
+        </div>
+
+        <div class="subtabs">
+          <button class="subtab-btn active" id="tab-orders" onclick="switchReportTab('orders')">Order History</button>
+          <button class="subtab-btn" id="tab-breakdown" onclick="switchReportTab('breakdown')">Item Breakdown</button>
+        </div>
+
+        <div class="scroll-table" id="report-view-content"></div>
+
+        <button class="btn-nav" style="width:100%; margin-top:0.85rem; padding:0.65rem;" onclick="exportDailyCSV()">📥 Download Today's Sales (CSV)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / REMOVE MENU ITEMS -->
+  <div class="modal-overlay" id="menu-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
+        <button onclick="closeMenuModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:#f8fafc; padding:0.85rem; border-radius:12px; margin-bottom:1rem; border:1px solid var(--border-dark);">
+          <div style="font-weight:700; font-size:0.82rem; margin-bottom:0.5rem;">+ Add New Menu Item</div>
+          <div class="form-group">
+            <label>Category Name</label>
+            <input class="form-control" id="new-item-cat" placeholder="e.g. Momo Corner, Drinks" list="cat-suggestions" />
+            <datalist id="cat-suggestions"></datalist>
+          </div>
+          <div class="form-group">
+            <label>Item Name</label>
+            <input class="form-control" id="new-item-name" placeholder="e.g. Cheese Momo" />
+          </div>
+          <div class="form-group">
+            <label>Price (৳)</label>
+            <input type="number" class="form-control" id="new-item-price" placeholder="e.g. 180" />
+          </div>
+          <button class="btn-action-full" onclick="saveNewItem()">Add to Menu</button>
+        </div>
+
+        <div style="font-weight:700; font-size:0.82rem; margin-bottom:0.5rem;">Current Menu Items (Tap Delete to Remove)</div>
+        <div id="existing-items-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FREE SUPABASE CLOUD SETUP -->
+  <div class="modal-overlay" id="cloud-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:1rem; font-weight:800;">Free Multi-Device Cloud Sync</h3>
+        <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4; margin-bottom:1rem;">
+          To view sales simultaneously across phone and PC, connect a free database at <b>supabase.com</b>:
+        </p>
+        <div class="form-group">
+          <label>Supabase Project URL</label>
+          <input class="form-control" id="sb-url" placeholder="https://xyz.supabase.co" />
+        </div>
+        <div class="form-group">
+          <label>Supabase Anon Key</label>
+          <input class="form-control" id="sb-key" placeholder="eyJhbGciOi..." />
+        </div>
+        <button class="btn-action-full" onclick="saveCloudConfig()">Save & Connect Cloud</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DEFAULT MENU ITEMS
+    const DEFAULT_MENU = {
+      "🥟 Momo Corner": [
+        { name: "Steamed Momo", price: 120 },
+        { name: "Kothey Momo", price: 140 },
+        { name: "Jhol Momo", price: 150 },
+        { name: "Fried Momo", price: 160 },
+        { name: "Sadik Momo", price: 180 },
+        { name: "Chilli Momo", price: 200 }
+      ],
+      "🍜 Noodles Time": [
+        { name: "Veg Noodles", price: 40 },
+        { name: "Noodles with Egg", price: 70 },
+        { name: "Keema Noodles", price: 120 },
+        { name: "Fried Ramen", price: 160 },
+        { name: "Soup Ramen", price: 200 }
+      ],
+      "🍚 Rice Items": [
+        { name: "Fried Rice Veg", price: 80 },
+        { name: "Fried Rice with Egg", price: 110 },
+        { name: "Chicken Chilli w/ Manchurian", price: 200 },
+        { name: "Fried Rice Chicken w/ Manchurian", price: 300 }
+      ],
+      "🍢 Snacks": [
+        { name: "Dump Chicken", price: 60 },
+        { name: "Dump Chicken with Egg", price: 100 },
+        { name: "Chicken Katti Roll", price: 80 }
+      ],
+      "🧋 Shakes & Coolers": [
+        { name: "Ice Lemonade", price: 20 },
+        { name: "Ice Tea", price: 40 },
+        { name: "Cold Coffee", price: 70 },
+        { name: "Badam Shake", price: 70 },
+        { name: "Milk Oreo Shake", price: 80 },
+        { name: "Vanilla Blue", price: 80 },
+        { name: "Lassi Matha", price: 100 },
+        { name: "Milk Strawberry", price: 100 },
+        { name: "Blue Curacao", price: 110 }
+      ],
+      "☕ Hot Drinks": [
+        { name: "Lemon Tea", price: 10 },
+        { name: "Black Tea", price: 10 },
+        { name: "Milk Tea", price: 20 },
+        { name: "Horlicks Milk", price: 40 }
+      ]
+    };
+
+    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom')) || DEFAULT_MENU;
+    let activeCategory = Object.keys(menu)[0] || "";
+    let liveCart = {};
+    let activeSubTab = 'orders';
+
+    function getToday() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    let activeDate = getToday();
+
+    // Supabase Client Handle
+    let supabaseClient = null;
+    const savedUrl = localStorage.getItem('aashi_sb_url');
+    const savedKey = localStorage.getItem('aashi_sb_key');
+    if (savedUrl && savedKey && window.supabase) {
+      supabaseClient = window.supabase.createClient(savedUrl, savedKey);
+    }
+
+    function init() {
+      document.getElementById('date-picker').value = activeDate;
+      renderCategories();
+      renderDishes();
+      updateDashboard();
+      syncFromCloud();
+    }
+
+    // Category & Dish Rendering
+    function renderCategories() {
+      const bar = document.getElementById('category-bar');
+      const cats = Object.keys(menu);
+      if (!cats.includes(activeCategory)) activeCategory = cats[0] || "";
+      bar.innerHTML = cats.map(c => `
+        <button class="cat-pill ${c === activeCategory ? 'active' : ''}" onclick="selectCat('${c}')">${c}</button>
+      `).join('');
+
+      // populate datalist for add item modal
+      const datalist = document.getElementById('cat-suggestions');
+      datalist.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+    }
+
+    function selectCat(cat) {
+      activeCategory = cat;
+      renderCategories();
+      renderDishes();
+    }
+
+    function renderDishes() {
+      const list = document.getElementById('dish-list');
+      const items = menu[activeCategory] || [];
+      if (items.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No items in this category. Add some using "Edit Menu".</p>`;
+        return;
+      }
+      list.innerHTML = items.map(d => `
+        <div class="dish-card" onclick="addToCart('${d.name.replace(/'/g, "\\'")}', ${d.price})">
+          <div class="dish-name">${d.name}</div>
+          <div class="dish-footer">
+            <span class="dish-price">৳${d.price}</span>
+            <div class="add-indicator">+</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Cart / Ticket Actions
+    function addToCart(name, price) {
+      if (!liveCart[name]) liveCart[name] = { price, qty: 0 };
+      liveCart[name].qty += 1;
+      renderTicket();
+    }
+
+    function changeQty(name, delta) {
+      if (!liveCart[name]) return;
+      liveCart[name].qty += delta;
+      if (liveCart[name].qty <= 0) delete liveCart[name];
+      renderTicket();
+    }
+
+    function clearTicket() {
+      liveCart = {};
+      renderTicket();
+    }
+
+    function renderTicket() {
+      const box = document.getElementById('ticket-container');
+      const totalEl = document.getElementById('ticket-price');
+      const qtyEl = document.getElementById('ticket-qty-tag');
+      const btn = document.getElementById('record-sale-btn');
+      const items = Object.keys(liveCart);
+
+      if (items.length === 0) {
+        box.innerHTML = `<div style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size: 0.85rem;">🛒 Tap items on the menu to add</div>`;
+        totalEl.innerText = "0";
+        qtyEl.innerText = "0 items";
+        btn.disabled = true;
+        return;
+      }
+
+      let subtotal = 0, totalQty = 0;
+      box.innerHTML = items.map(name => {
+        const item = liveCart[name];
+        const lineTot = item.price * item.qty;
+        subtotal += lineTot;
+        totalQty += item.qty;
+        return `
+          <div class="order-line">
+            <div>
+              <div class="order-line-name">${name}</div>
+              <div class="order-line-meta">৳${item.price} × ${item.qty} = ৳${lineTot}</div>
+            </div>
+            <div class="counter-wrap">
+              <button class="count-btn" onclick="changeQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
+              <div style="font-size:0.8rem; font-weight:800; width:16px; text-align:center;">${item.qty}</div>
+              <button class="count-btn" onclick="changeQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      totalEl.innerText = subtotal;
+      qtyEl.innerText = `${totalQty} items`;
+      btn.disabled = false;
+    }
+
+    // Checkout & Persistent Storage
+    async function confirmOrder() {
+      const items = Object.keys(liveCart).map(name => ({
+        name: name,
+        price: liveCart[name].price,
+        qty: liveCart[name].qty,
+        total: liveCart[name].price * liveCart[name].qty
+      }));
+
+      const orderTotal = items.reduce((s, x) => s + x.total, 0);
+      const totalQty = items.reduce((s, x) => s + x.qty, 0);
+      const today = getToday();
+
+      const order = {
+        id: "ORD-" + Date.now().toString().slice(-4),
+        date: today,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        items: items,
+        totalQty: totalQty,
+        orderTotal: orderTotal
+      };
+
+      // Local storage save
+      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
+      if (!ledger[today]) ledger[today] = [];
+      ledger[today].unshift(order);
+      localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
+
+      // Supabase Cloud Sync (if connected)
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('orders').insert([order]);
+        } catch (e) {
+          console.warn("Cloud sync failed, stored locally", e);
+        }
+      }
+
+      activeDate = today;
+      document.getElementById('date-picker').value = today;
+      document.getElementById('active-date-badge').innerText = "Today";
+
+      clearTicket();
+      updateDashboard();
+    }
+
+    // Dashboard & Reports
+    function switchReportTab(t) {
+      activeSubTab = t;
+      document.getElementById('tab-orders').className = `subtab-btn ${t === 'orders' ? 'active' : ''}`;
+      document.getElementById('tab-breakdown').className = `subtab-btn ${t === 'breakdown' ? 'active' : ''}`;
+      updateDashboard();
+    }
+
+    function changeActiveDate(d) {
+      if (!d) return;
+      activeDate = d;
+      document.getElementById('active-date-badge').innerText = (activeDate === getToday()) ? "Today" : activeDate;
+      updateDashboard();
+    }
+
+    function updateDashboard() {
+      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
+      const orders = ledger[activeDate] || [];
+
+      let rev = 0, qty = 0;
+      const breakdown = {};
+
+      orders.forEach(o => {
+        rev += o.orderTotal;
+        qty += o.totalQty;
+        o.items.forEach(i => {
+          if (!breakdown[i.name]) breakdown[i.name] = { qty: 0, revenue: 0 };
+          breakdown[i.name].qty += i.qty;
+          breakdown[i.name].revenue += i.total;
+        });
+      });
+
+      document.getElementById('metric-revenue').innerText = rev;
+      document.getElementById('metric-tickets').innerText = orders.length;
+      document.getElementById('metric-quantity').innerText = qty;
+
+      const view = document.getElementById('report-view-content');
+      if (orders.length === 0) {
+        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--text-muted); font-size:0.8rem;">No sales registered for this date.</p>`;
+        return;
+      }
+
+      if (activeSubTab === 'orders') {
+        view.innerHTML = orders.map(o => `
+          <div class="row-record">
+            <div>
+              <strong>${o.id}</strong> <span style="color:var(--text-muted); font-size:0.75rem;">${o.time}</span><br>
+              <span style="font-size:0.75rem; color:#475569;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
+            </div>
+            <strong>৳${o.orderTotal}</strong>
+          </div>
+        `).join('');
+      } else {
+        const sorted = Object.keys(breakdown).sort((a,b) => breakdown[b].qty - breakdown[a].qty);
+        view.innerHTML = sorted.map(name => `
+          <div class="row-record">
+            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${breakdown[name].qty} sold</span></div>
+            <strong style="color:var(--primary);">৳${breakdown[name].revenue}</strong>
+          </div>
+        `).join('');
+      }
+    }
+
+    // MENU MANAGER (Add / Delete Items)
+    function openMenuModal() {
+      renderManageList();
+      document.getElementById('menu-modal').style.display = 'flex';
+    }
+    function closeMenuModal() {
+      document.getElementById('menu-modal').style.display = 'none';
+    }
+
+    function renderManageList() {
+      const wrap = document.getElementById('existing-items-list');
+      let html = '';
+      Object.keys(menu).forEach(cat => {
+        html += `<div style="font-size:0.78rem; font-weight:800; color:var(--primary); margin:8px 0 4px 0;">${cat}</div>`;
+        menu[cat].forEach((it, idx) => {
+          html += `
+            <div class="menu-manager-row">
+              <span>${it.name} (৳${it.price})</span>
+              <button class="btn-delete" onclick="removeItem('${cat}', ${idx})">Delete</button>
+            </div>
+          `;
+        });
+      });
+      wrap.innerHTML = html;
+    }
+
+    function saveNewItem() {
+      const cat = document.getElementById('new-item-cat').value.trim();
+      const name = document.getElementById('new-item-name').value.trim();
+      const price = parseFloat(document.getElementById('new-item-price').value);
+
+      if (!cat || !name || isNaN(price)) {
+        alert("Please enter a category, item name, and valid price!");
+        return;
+      }
+
+      if (!menu[cat]) menu[cat] = [];
+      menu[cat].push({ name, price });
+
+      localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
+      document.getElementById('new-item-name').value = '';
+      document.getElementById('new-item-price').value = '';
+
+      renderManageList();
+      renderCategories();
+      renderDishes();
+    }
+
+    function removeItem(cat, idx) {
+      if (confirm(`Remove this item from ${cat}?`)) {
+        menu[cat].splice(idx, 1);
+        if (menu[cat].length === 0) delete menu[cat];
+        localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
+        renderManageList();
+        renderCategories();
+        renderDishes();
+      }
+    }
+
+    // CLOUD SYNC LOGIC
+    function openCloudModal() {
+      document.getElementById('sb-url').value = localStorage.getItem('aashi_sb_url') || '';
+      document.getElementById('sb-key').value = localStorage.getItem('aashi_sb_key') || '';
+      document.getElementById('cloud-modal').style.display = 'flex';
+    }
+    function closeCloudModal() { document.getElementById('cloud-modal').style.display = 'none'; }
+
+    function saveCloudConfig() {
+      const url = document.getElementById('sb-url').value.trim();
+      const key = document.getElementById('sb-key').value.trim();
+      localStorage.setItem('aashi_sb_url', url);
+      localStorage.setItem('aashi_sb_key', key);
+      closeCloudModal();
+      location.reload();
+    }
+
+    async function syncFromCloud() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('orders').select('*');
+        if (!error && data) {
+          const ledger = {};
+          data.forEach(o => {
+            if (!ledger[o.date]) ledger[o.date] = [];
+            ledger[o.date].push(o);
+          });
+          localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
+          updateDashboard();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // CSV Download
+    function exportDailyCSV() {
+      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
+      const orders = ledger[activeDate] || [];
+      if (orders.length === 0) return alert("No records for " + activeDate);
+
+      let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
+      orders.forEach(o => {
+        o.items.forEach(i => {
+          csv += `"${activeDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
+        });
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Aashi_Sales_${activeDate}.csv`;
+      a.click();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
