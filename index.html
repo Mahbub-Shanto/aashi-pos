@@ -183,7 +183,7 @@
     .panel-head h2 { font-size: 1.05rem; font-weight: 800; }
 
     /* Cart */
-    .ticket-list { max-height: 250px; overflow-y: auto; }
+    .ticket-list { max-height: 230px; overflow-y: auto; }
     .ticket-row {
       display: flex;
       justify-content: space-between;
@@ -214,8 +214,60 @@
     }
     .stepper-val { font-size: 0.82rem; font-weight: 800; width: 18px; text-align: center; }
 
+    /* Table Selector */
+    .table-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.75rem;
+      margin-top: 0.85rem;
+    }
+    .table-section-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .table-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .table-chips::-webkit-scrollbar { display: none; }
+    .tbl-chip {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tbl-chip.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .custom-table-input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      outline: none;
+      background: white;
+    }
+
     .bill-bar {
-      margin-top: 1rem;
+      margin-top: 0.85rem;
       padding-top: 0.75rem;
       border-top: 2px dashed var(--border);
       display: flex;
@@ -290,6 +342,15 @@
       padding: 0.65rem 0;
       border-bottom: 1px solid #fbf7f4;
       font-size: 0.82rem;
+    }
+    .table-tag {
+      background: var(--primary-container);
+      color: var(--primary-dark);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      margin-left: 4px;
     }
     .btn-trash {
       width: 26px;
@@ -397,6 +458,23 @@
         <div class="ticket-list" id="ticket-list">
           <p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
         </div>
+
+        <!-- Table No. Selector -->
+        <div class="table-section">
+          <div class="table-section-label">
+            <span>Select Table / Order Type</span>
+            <span id="active-table-display" style="color:var(--primary); font-weight:800;">Table: T-1</span>
+          </div>
+          <div class="table-chips">
+            <button class="tbl-chip selected" onclick="pickTable('T-1')">T-1</button>
+            <button class="tbl-chip" onclick="pickTable('T-2')">T-2</button>
+            <button class="tbl-chip" onclick="pickTable('T-3')">T-3</button>
+            <button class="tbl-chip" onclick="pickTable('T-4')">T-4</button>
+            <button class="tbl-chip" onclick="pickTable('Parcel')">Parcel</button>
+          </div>
+          <input class="custom-table-input" id="custom-table-input" placeholder="Or type table (e.g. Table 5, Rooftop)" oninput="customTableType(this.value)" />
+        </div>
+
         <div class="bill-bar">
           <div>
             <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Bill Due</div>
@@ -565,6 +643,7 @@
     let activeCategory = Object.keys(menu)[0] || "";
     let activeCart = {};
     let subTab = 'orders';
+    let selectedTable = 'T-1';
 
     function getTodayString() {
       const d = new Date();
@@ -625,6 +704,26 @@
       `).join('');
     }
 
+    // Table Selection
+    function pickTable(tbl) {
+      selectedTable = tbl;
+      document.querySelectorAll('.tbl-chip').forEach(el => {
+        el.classList.toggle('selected', el.innerText === tbl);
+      });
+      document.getElementById('custom-table-input').value = '';
+      document.getElementById('active-table-display').innerText = "Table: " + tbl;
+    }
+
+    function customTableType(val) {
+      if (val.trim()) {
+        selectedTable = val.trim();
+        document.querySelectorAll('.tbl-chip').forEach(el => el.classList.remove('selected'));
+        document.getElementById('active-table-display').innerText = "Table: " + selectedTable;
+      } else {
+        pickTable('T-1');
+      }
+    }
+
     // Cart Operations
     function addToTicket(name, price) {
       if (!activeCart[name]) activeCart[name] = { price, qty: 0 };
@@ -641,6 +740,7 @@
 
     function clearTicket() {
       activeCart = {};
+      pickTable('T-1');
       renderTicket();
     }
 
@@ -695,7 +795,7 @@
       document.getElementById('cart-panel').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Checkout
+    // Checkout with Table No.
     async function recordSale() {
       const items = Object.keys(activeCart).map(name => ({
         name: name,
@@ -710,6 +810,7 @@
 
       const order = {
         id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random() * 10),
+        table: selectedTable || "T-1",
         date: today,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         items: items,
@@ -734,7 +835,7 @@
       }
     }
 
-    // Deletion Operations with Cloud Deletion
+    // Delete Operations
     async function deleteSingleOrder(orderId) {
       if (!confirm(`Delete order ${orderId}?`)) return;
 
@@ -830,7 +931,9 @@
         view.innerHTML = orders.map(o => `
           <div class="row-record">
             <div>
-              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">${o.time}</span>
+              <strong>${o.id}</strong> 
+              <span class="table-tag">${o.table || 'T-1'}</span>
+              <span style="font-size:0.75rem; color:var(--text-muted); margin-left:4px;">${o.time}</span>
               ${o.synced === false ? '<span style="color:#d97706; font-size:0.7rem; font-weight:800;"> (Offline)</span>' : ''}
               <br/>
               <span style="font-size:0.75rem; color:#57534e;">${(o.items || []).map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
@@ -852,7 +955,7 @@
       }
     }
 
-    // Pending Offline Orders Helper
+    // Cloud Sync
     function getPending() {
       const ledger = loadLedger();
       const list = [];
@@ -862,7 +965,6 @@
       return list;
     }
 
-    // Push local unsynced orders to Supabase
     async function pushPending() {
       const conf = getCloudConfig();
       if (!conf || !navigator.onLine) return;
@@ -871,7 +973,7 @@
 
       try {
         const rows = pending.map(o => ({
-          id: o.id, date: o.date, time: o.time, items: o.items, totalQty: o.totalQty, orderTotal: o.orderTotal
+          id: o.id, table: o.table, date: o.date, time: o.time, items: o.items, totalQty: o.totalQty, orderTotal: o.orderTotal
         }));
 
         const res = await fetch(`${conf.url}/rest/v1/orders`, {
@@ -899,7 +1001,6 @@
       updateSyncUI();
     }
 
-    // TRUE TWO-WAY MIRROR SYNC (Deletions on other devices are purged locally)
     async function pullCloud() {
       const conf = getCloudConfig();
       if (!conf || !navigator.onLine) return;
@@ -915,16 +1016,16 @@
           const ledger = loadLedger();
           const cloudIdSet = new Set(cloudOrders.map(o => o.id));
 
-          // 1. Remove locally any order that was deleted from Supabase (unless created offline and waiting to push)
+          // Purge deleted orders locally
           Object.keys(ledger).forEach(date => {
             ledger[date] = ledger[date].filter(localOrder => {
-              if (localOrder.synced === false) return true; // keep unsynced local creations
-              return cloudIdSet.has(localOrder.id);         // remove if deleted from cloud
+              if (localOrder.synced === false) return true;
+              return cloudIdSet.has(localOrder.id);
             });
             if (ledger[date].length === 0) delete ledger[date];
           });
 
-          // 2. Insert or update cloud orders into local ledger
+          // Insert or update orders
           cloudOrders.forEach(co => {
             if (!ledger[co.date]) ledger[co.date] = [];
             const idx = ledger[co.date].findIndex(lo => lo.id === co.id);
@@ -935,7 +1036,6 @@
             }
           });
 
-          // 3. Sort orders newest first
           Object.keys(ledger).forEach(date => {
             ledger[date].sort((a, b) => b.id.localeCompare(a.id));
           });
@@ -1068,16 +1168,16 @@
       }
     }
 
-    // Export CSV
+    // Export CSV with Table Number Column
     function exportCSV() {
       const ledger = loadLedger();
       const orders = ledger[viewDate] || [];
       if (orders.length === 0) return alert("No sales recorded for " + viewDate);
 
-      let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
+      let csv = "Date,Ticket ID,Table,Time,Item,Price,Quantity,Item Total,Order Total\n";
       orders.forEach(o => {
         (o.items || []).forEach(i => {
-          csv += `"${viewDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
+          csv += `"${viewDate}","${o.id}","${o.table || 'T-1'}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
         });
       });
       const blob = new Blob([csv], { type: 'text/csv' });
