@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Safe Cloud Client Loader -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
@@ -66,17 +65,8 @@
       justify-content: center;
       font-size: 1.25rem;
     }
-    .brand-name {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-    }
-    .brand-sub {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    .brand-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.3px; }
+    .brand-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
     .nav-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .chip-btn {
@@ -373,7 +363,7 @@
 </head>
 <body>
 
-  <!-- App Header -->
+  <!-- Top App Navigation -->
   <header class="top-bar">
     <div class="top-bar-inner">
       <div class="brand">
@@ -589,31 +579,31 @@
     }
     let viewDate = getTodayString();
 
-    // Supabase
+    // Supabase Safe Client Instance
     let supabase = null;
-    const sbUrl = localStorage.getItem('aashi_sb_url');
-    const sbKey = localStorage.getItem('aashi_sb_key');
-    if (sbUrl && sbKey && window.supabase && typeof window.supabase.createClient === 'function') {
-      try {
-        supabase = window.supabase.createClient(sbUrl, sbKey);
-      } catch(e) {
-        console.warn("Supabase init error:", e);
+    function initSupabase() {
+      const sbUrl = (localStorage.getItem('aashi_sb_url') || '').trim();
+      const sbKey = (localStorage.getItem('aashi_sb_key') || '').trim();
+      if (sbUrl && sbKey && window.supabase && typeof window.supabase.createClient === 'function') {
+        try {
+          supabase = window.supabase.createClient(sbUrl, sbKey);
+        } catch(e) {
+          console.warn("Supabase init error:", e);
+          supabase = null;
+        }
       }
     }
 
     function init() {
-      try {
-        document.getElementById('date-picker').value = viewDate;
-        renderCategories();
-        renderDishes();
-        refreshDashboard();
-        updateSyncUI();
+      initSupabase();
+      document.getElementById('date-picker').value = viewDate;
+      renderCategories();
+      renderDishes();
+      refreshDashboard();
+      updateSyncUI();
 
-        window.addEventListener('online', () => syncAll());
-        if (navigator.onLine && supabase) syncAll();
-      } catch (err) {
-        console.error("Initialization error:", err);
-      }
+      window.addEventListener('online', () => syncAll());
+      if (navigator.onLine && supabase) syncAll();
     }
 
     // Categories and Dishes
@@ -947,7 +937,7 @@
 
       if (!supabase) {
         ico.innerText = "⚙️";
-        txt.innerText = "No Cloud";
+        txt.innerText = "Local Mode";
         pill.className = "chip-btn";
         return;
       }
@@ -1023,7 +1013,7 @@
       renderDishes();
     }
 
-    // Cloud Modal
+    // Cloud Modal Handlers
     function openCloudModal() {
       document.getElementById('sb-url-val').value = localStorage.getItem('aashi_sb_url') || '';
       document.getElementById('sb-key-val').value = localStorage.getItem('aashi_sb_key') || '';
@@ -1036,11 +1026,18 @@
       const key = document.getElementById('sb-key-val').value.trim();
       localStorage.setItem('aashi_sb_url', url);
       localStorage.setItem('aashi_sb_key', key);
+      
       closeCloudModal();
-      location.reload();
+      
+      // Connect in-memory without reloading the entire page
+      initSupabase();
+      updateSyncUI();
+      if (supabase && navigator.onLine) {
+        syncAll();
+      }
     }
 
-    // CSV Download
+    // Export CSV
     function exportCSV() {
       const ledger = loadLedger();
       const orders = ledger[viewDate] || [];
