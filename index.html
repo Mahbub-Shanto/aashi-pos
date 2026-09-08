@@ -3,193 +3,253 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Aashi Momo & Maozhu | Material POS</title>
+  <title>Aashi Momo & Maozhu | Modern POS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --primary: #c2410c;
-      --primary-container: #ffedd5;
-      --on-primary-container: #7c2d12;
-      --surface: #fff7ed;
-      --surface-card: #ffffff;
-      --surface-container: #ffedd5;
-      --border: #fed7aa;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
-      --danger: #dc2626;
-      --danger-container: #fee2e2;
-      --success: #16a34a;
-      --success-container: #dcfce7;
-      --radius-sm: 8px;
-      --radius-md: 16px;
-      --radius-full: 9999px;
+      --md-primary: #b83214;
+      --md-primary-container: #ffdad2;
+      --md-on-primary-container: #3d0700;
+      --md-surface: #faf5f0;
+      --md-surface-card: #ffffff;
+      --md-surface-variant: #f2ebe3;
+      --md-border: #ebdcd4;
+      --md-text: #201a18;
+      --md-text-muted: #796c68;
+      --md-success: #15803d;
+      --md-success-bg: #dcfce7;
+      --md-error: #dc2626;
+      --md-error-bg: #fee2e2;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(32,26,24,0.06);
+      --shadow-lg: 0 12px 30px rgba(32,26,24,0.1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--surface); color: var(--text-main); padding-bottom: 40px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--md-surface); color: var(--md-text); min-height: 100vh; overflow-x: hidden; }
 
-    /* Top Bar */
-    .top-bar {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1.25rem;
+    /* Top Navigation */
+    .app-bar {
+      background: var(--md-surface-card);
+      border-bottom: 1px solid var(--md-border);
+      padding: 0.85rem 1.5rem;
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .app-bar-inner {
+      max-width: 1400px;
+      margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
-    .brand {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+    }
+    .brand-logo {
+      background: linear-gradient(135deg, var(--md-primary), #e65100);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 3px 8px rgba(184, 50, 20, 0.25);
+    }
+    .brand-title {
       font-size: 1.15rem;
       font-weight: 800;
-      color: var(--primary);
+      letter-spacing: -0.3px;
+      color: var(--md-text);
+      line-height: 1.2;
     }
-    .actions-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+    .brand-subtitle {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--md-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
 
-    /* M3 Chips & Buttons */
-    .chip-btn {
-      background: var(--surface-container);
-      color: var(--on-primary-container);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-full);
-      padding: 6px 14px;
+    /* Action Badges / Buttons */
+    .m3-btn-tonal {
+      background: var(--md-surface-variant);
+      color: var(--md-text);
+      border: 1px solid var(--md-border);
+      border-radius: 9999px;
+      padding: 7px 14px;
       font-size: 0.8rem;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .chip-btn:active { transform: scale(0.96); }
-    .chip-btn.synced { background: var(--success-container); color: var(--success); border-color: #bbf7d0; }
-    .chip-btn.pending { background: #fef08a; color: #854d0e; border-color: #fde047; }
+    .m3-btn-tonal:hover { background: #e8ded4; }
+    .m3-btn-tonal:active { transform: scale(0.96); }
+    .m3-btn-tonal.synced { background: var(--md-success-bg); color: var(--md-success); border-color: #bbf7d0; }
+    .m3-btn-tonal.pending { background: #fef3c7; color: #b45309; border-color: #fde68a; }
 
-    /* Layout */
-    .app-shell {
-      max-width: 1200px;
-      margin: 1.25rem auto;
-      padding: 0 1rem;
+    /* Main Responsive Container */
+    .workspace {
+      max-width: 1400px;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem 5rem 1.25rem;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
-    @media (min-width: 960px) {
-      .app-shell { grid-template-columns: 1.35fr 0.85fr; }
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.4fr 0.85fr;
+        padding-bottom: 2rem;
+      }
     }
 
-    /* Categories Strip */
-    .category-strip {
+    /* Category Pill Selector */
+    .category-container {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 1rem;
       scrollbar-width: none;
     }
-    .category-strip::-webkit-scrollbar { display: none; }
-    .cat-item {
-      background: white;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: var(--radius-full);
+    .category-container::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      background: var(--md-surface-card);
+      border: 1px solid var(--md-border);
+      color: var(--md-text-muted);
+      padding: 8px 18px;
+      border-radius: 9999px;
       font-size: 0.85rem;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.15s;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .cat-item.active {
-      background: var(--primary);
+    .cat-pill.active {
+      background: var(--md-primary);
       color: white;
       border-color: transparent;
-      box-shadow: 0 2px 8px rgba(194, 65, 12, 0.3);
+      box-shadow: 0 4px 12px rgba(184, 50, 20, 0.3);
+      transform: translateY(-1px);
     }
 
-    /* Dish Grid */
-    .dish-grid {
+    /* Menu Cards Grid */
+    .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
     }
     .dish-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 0.9rem;
-      cursor: pointer;
+      background: var(--md-surface-card);
+      border: 1px solid var(--md-border);
+      border-radius: 20px;
+      padding: 1.1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 105px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      min-height: 115px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
     }
-    .dish-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .dish-card:hover {
+      border-color: var(--md-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
     .dish-card:active { transform: scale(0.97); }
-    .dish-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
-    .dish-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-    .dish-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
-    .dish-add {
-      background: var(--primary-container);
-      color: var(--primary);
-      width: 24px;
-      height: 24px;
+    .dish-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--md-text);
+      line-height: 1.3;
+    }
+    .dish-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .dish-price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--md-primary);
+    }
+    .dish-add-circle {
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
+      background: var(--md-primary-container);
+      color: var(--md-primary);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.1rem;
       font-weight: 800;
     }
 
-    /* Cards */
-    .panel-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
+    /* Elevation Panels */
+    .surface-panel {
+      background: var(--md-surface-card);
+      border: 1px solid var(--md-border);
+      border-radius: 24px;
+      padding: 1.4rem;
+      box-shadow: var(--shadow-sm);
       margin-bottom: 1.25rem;
     }
-    .panel-header {
+    .panel-heading {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.1rem;
     }
-    .panel-title { font-size: 1.05rem; font-weight: 800; }
+    .panel-heading h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
 
-    /* Active Cart */
-    .order-list { max-height: 250px; overflow-y: auto; }
-    .order-row {
+    /* Cart Items */
+    .ticket-scroller { max-height: 270px; overflow-y: auto; padding-right: 4px; }
+    .ticket-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.65rem 0;
-      border-bottom: 1px solid #fdf2e9;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f8f4ef;
     }
+    .ticket-name { font-size: 0.9rem; font-weight: 700; }
+    .ticket-sub { font-size: 0.76rem; color: var(--md-text-muted); margin-top: 2px; }
+    
     .stepper {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #fdf2e9;
-      border-radius: var(--radius-full);
+      background: var(--md-surface-variant);
+      border-radius: 9999px;
       padding: 3px;
     }
     .stepper-btn {
@@ -198,110 +258,139 @@
       border-radius: 50%;
       border: none;
       background: white;
+      color: var(--md-text);
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: var(--shadow-sm);
     }
+    .stepper-num { font-size: 0.85rem; font-weight: 800; width: 18px; text-align: center; }
 
     .bill-checkout-bar {
       margin-top: 1rem;
-      padding-top: 0.75rem;
-      border-top: 2px dashed var(--border);
+      padding-top: 1rem;
+      border-top: 2px dashed var(--md-border);
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
     }
-    .bill-val { font-size: 1.45rem; font-weight: 900; color: var(--primary); }
+    .bill-amount-due { font-size: 1.65rem; font-weight: 900; color: var(--md-primary); line-height: 1; }
 
-    .btn-fill {
+    .btn-fill-primary {
       width: 100%;
       margin-top: 1rem;
-      padding: 0.85rem;
-      border-radius: var(--radius-full);
+      padding: 0.95rem;
+      border-radius: 16px;
       border: none;
-      background: var(--primary);
+      background: var(--md-primary);
       color: white;
-      font-size: 0.95rem;
-      font-weight: 700;
+      font-size: 0.98rem;
+      font-weight: 800;
       cursor: pointer;
-      transition: all 0.15s;
+      box-shadow: 0 4px 14px rgba(184, 50, 20, 0.3);
+      transition: all 0.2s;
     }
-    .btn-fill:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .btn-fill-primary:disabled {
+      background: #e2d9d4;
+      color: #9c8e89;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
 
-    /* Metrics Strip */
-    .stats-row {
+    /* Metric Grid */
+    .metric-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 1rem;
+      gap: 10px;
+      margin-bottom: 1.1rem;
     }
-    .stat-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 0.75rem 0.4rem;
+    .metric-card {
+      background: var(--md-surface);
+      border: 1px solid var(--md-border);
+      border-radius: 16px;
+      padding: 0.85rem 0.5rem;
       text-align: center;
     }
-    .stat-lbl { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-    .stat-num { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .metric-label { font-size: 0.7rem; font-weight: 700; color: var(--md-text-muted); text-transform: uppercase; }
+    .metric-val { font-size: 1.25rem; font-weight: 900; margin-top: 3px; color: var(--md-text); }
 
-    /* Segmented Controls */
-    .segmented-bar {
+    /* Segmented Tab Controls */
+    .segmented-tabs {
       display: flex;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-full);
+      background: var(--md-surface-variant);
+      border-radius: 9999px;
       padding: 3px;
       margin-bottom: 1rem;
     }
-    .segmented-tab {
+    .segment-tab {
       flex: 1;
-      padding: 6px;
-      border-radius: var(--radius-full);
+      padding: 7px;
+      border-radius: 9999px;
       border: none;
       background: transparent;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--md-text-muted);
       cursor: pointer;
     }
-    .segmented-tab.active {
+    .segment-tab.active {
       background: white;
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      color: var(--md-primary);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* History & Delete List */
-    .history-row {
+    /* History and Breakdown list */
+    .record-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.65rem 0;
-      border-bottom: 1px solid #fdf2e9;
-      font-size: 0.82rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f8f4ef;
+      font-size: 0.85rem;
     }
-    .btn-delete {
-      width: 26px;
-      height: 26px;
+    .btn-del-circle {
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       border: none;
-      background: var(--danger-container);
-      color: var(--danger);
+      background: var(--md-error-bg);
+      color: var(--md-error);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
+      font-weight: 800;
+    }
+
+    /* Mobile Bottom Sticky Bar */
+    .mobile-cart-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--md-surface-card);
+      border-top: 1px solid var(--md-border);
+      padding: 0.85rem 1.25rem;
+      z-index: 45;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
+    }
+    @media (max-width: 1023px) {
+      .mobile-cart-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
     }
 
     /* Modals */
     .scrim {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.45);
-      backdrop-filter: blur(3px);
+      background: rgba(32, 26, 24, 0.45);
+      backdrop-filter: blur(4px);
       z-index: 100;
       display: none;
       align-items: center;
@@ -310,153 +399,168 @@
     }
     .modal-box {
       background: white;
-      border-radius: var(--radius-md);
+      border-radius: 24px;
       max-width: 480px;
       width: 100%;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
-      padding: 1.25rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
     }
-    .input-box {
+    .input-field {
       width: 100%;
-      padding: 0.7rem 0.9rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      margin-bottom: 0.75rem;
-      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--md-border);
+      border-radius: 12px;
+      margin-bottom: 0.85rem;
+      font-size: 0.88rem;
       outline: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <header class="top-bar">
-    <div class="brand">
-      <span>🥟 AASHI MOMO & MAOZHU</span>
-    </div>
-    <div class="actions-bar">
-      <button id="sync-chip" class="chip-btn" onclick="manualSync()">
-        <span id="sync-icon">☁️</span> <span id="sync-txt">Sync: Connected</span>
-      </button>
-      <button class="chip-btn" onclick="openMenuEditor()">⚙️ Edit Menu</button>
-      <button class="chip-btn" onclick="openCloudConfig()">🔑 Cloud</button>
-      <input type="date" id="view-date-input" onchange="setDateView(this.value)" style="border:1px solid var(--border); border-radius:999px; padding:5px 10px; font-weight:700; background:white;" />
+  <!-- Top App Navigation -->
+  <header class="app-bar">
+    <div class="app-bar-inner">
+      <div class="brand-group">
+        <div class="brand-logo">🥟</div>
+        <div>
+          <div class="brand-title">Aashi Momo & Maozhu</div>
+          <div class="brand-subtitle">Smart POS & Sales Hub</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="sync-btn" class="m3-btn-tonal" onclick="manualSync()">
+          <span id="sync-icon">☁️</span> <span id="sync-text">Connected</span>
+        </button>
+        <button class="m3-btn-tonal" onclick="openMenuModal()">⚙️ Menu</button>
+        <button class="m3-btn-tonal" onclick="openCloudModal()">🔑 Cloud</button>
+        <input type="date" id="date-selector" onchange="setDateView(this.value)" style="border:1px solid var(--md-border); background:var(--md-surface-variant); border-radius:999px; padding:6px 12px; font-weight:700; color:var(--md-text); outline:none; cursor:pointer;" />
+      </div>
     </div>
   </header>
 
-  <div class="app-shell">
+  <!-- Main Shell -->
+  <main class="workspace">
     <!-- LEFT: CATEGORIES & DISHES -->
-    <div>
-      <div class="category-strip" id="cat-strip"></div>
-      <div class="dish-grid" id="dish-grid"></div>
-    </div>
+    <section>
+      <div class="category-container" id="category-strip"></div>
+      <div class="menu-grid" id="menu-dish-grid"></div>
+    </section>
 
-    <!-- RIGHT: CART & PERFORMANCE -->
-    <div>
-      <!-- Current Order -->
-      <div class="panel-card">
-        <div class="panel-header">
-          <span class="panel-title">Active Order</span>
-          <button onclick="clearTicket()" style="background:none; border:none; color:var(--danger); font-size:0.75rem; font-weight:700; cursor:pointer;">Clear Ticket</button>
+    <!-- RIGHT: ORDER SUMMARY & DASHBOARD -->
+    <section id="side-dock">
+      <!-- Active Cart -->
+      <div class="surface-panel" id="cart-panel">
+        <div class="panel-heading">
+          <h2>Active Ticket</h2>
+          <button onclick="clearTicket()" style="background:none; border:none; color:var(--md-error); font-size:0.8rem; font-weight:700; cursor:pointer;">Clear</button>
         </div>
-        <div class="order-list" id="ticket-list">
-          <p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
+        <div class="ticket-scroller" id="ticket-items">
+          <p style="text-align:center; padding: 2rem 0; color:var(--md-text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
         </div>
         <div class="bill-checkout-bar">
           <div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Amount Due</div>
-            <div class="bill-val">৳ <span id="ticket-total">0</span></div>
+            <div style="font-size:0.8rem; color:var(--md-text-muted); font-weight:600;">Total Bill Due</div>
+            <div class="bill-amount-due">৳ <span id="ticket-total">0</span></div>
           </div>
-          <span id="ticket-items-count" style="background:var(--surface-container); padding:4px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 items</span>
+          <span id="ticket-count-badge" style="background:var(--md-surface-variant); padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 items</span>
         </div>
-        <button id="btn-submit-order" class="btn-fill" onclick="completeSale()" disabled>Record Sale</button>
+        <button id="btn-submit" class="btn-fill-primary" onclick="checkoutSale()" disabled>Record Sale</button>
       </div>
 
       <!-- Daily Sales Summary -->
-      <div class="panel-card">
-        <div class="panel-header">
-          <span class="panel-title">Daily Summary</span>
-          <span id="date-badge" style="background:var(--primary-container); color:var(--on-primary-container); padding:3px 8px; border-radius:999px; font-size:0.75rem; font-weight:700;">Today</span>
+      <div class="surface-panel">
+        <div class="panel-heading">
+          <h2>Sales Ledger</h2>
+          <span id="active-date-badge" style="background:var(--md-primary-container); color:var(--md-on-primary-container); padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:800;">Today</span>
         </div>
 
-        <div class="stats-row">
-          <div class="stat-item">
-            <div class="stat-lbl">Revenue</div>
-            <div class="stat-num" style="color:var(--primary);">৳<span id="metric-rev">0</span></div>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">Revenue</div>
+            <div class="metric-val" style="color:var(--md-primary);">৳<span id="metric-revenue">0</span></div>
           </div>
-          <div class="stat-item">
-            <div class="stat-lbl">Orders</div>
-            <div class="stat-num" id="metric-orders">0</div>
+          <div class="metric-card">
+            <div class="metric-label">Orders</div>
+            <div class="metric-val" id="metric-orders">0</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-lbl">Items Sold</div>
-            <div class="stat-num" id="metric-units">0</div>
+          <div class="metric-card">
+            <div class="metric-label">Items Sold</div>
+            <div class="metric-val" id="metric-items">0</div>
           </div>
         </div>
 
-        <!-- Sub Tabs -->
-        <div class="segmented-bar">
-          <button class="segmented-tab active" id="tab-orders" onclick="setSubTab('orders')">Order History</button>
-          <button class="segmented-tab" id="tab-breakdown" onclick="setSubTab('breakdown')">Item Breakdown</button>
+        <!-- Segmented Tab -->
+        <div class="segmented-tabs">
+          <button class="segment-tab active" id="tab-orders" onclick="setSubTab('orders')">Order History</button>
+          <button class="segment-tab" id="tab-breakdown" onclick="setSubTab('breakdown')">Item Breakdown</button>
         </div>
 
-        <div style="max-height: 220px; overflow-y: auto;" id="report-view"></div>
+        <div style="max-height: 240px; overflow-y: auto;" id="report-view"></div>
 
-        <!-- Action Buttons -->
-        <div style="display:flex; gap:8px; margin-top:1rem;">
-          <button class="chip-btn" style="flex:1; justify-content:center; padding:10px;" onclick="exportCSV()">📥 Download CSV</button>
-          <button class="chip-btn" style="color:var(--danger); border-color:#fecaca; justify-content:center; padding:10px;" onclick="clearCurrentDay()">🗑️ Clear Day</button>
+        <div style="display:flex; gap:8px; margin-top:1.1rem;">
+          <button class="m3-btn-tonal" style="flex:1; justify-content:center; padding:10px;" onclick="exportCSV()">📥 Download CSV</button>
+          <button class="m3-btn-tonal" style="color:var(--md-error); border-color:#fecaca; justify-content:center; padding:10px;" onclick="clearDayRecords()">🗑️ Clear Day</button>
         </div>
       </div>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Sticky Floating Bar -->
+  <div class="mobile-cart-bar">
+    <div>
+      <div style="font-size:0.75rem; color:var(--md-text-muted); font-weight:700;">CURRENT ORDER</div>
+      <div style="font-size:1.25rem; font-weight:900; color:var(--md-primary);">৳ <span id="mobile-ticket-total">0</span></div>
     </div>
+    <button class="btn-fill-primary" style="width:auto; margin-top:0; padding:0.65rem 1.4rem;" onclick="scrollToCart()">View Ticket (<span id="mobile-ticket-count">0</span>)</button>
   </div>
 
-  <!-- MODAL: MENU EDITOR -->
+  <!-- MODAL: MANAGE MENU -->
   <div class="scrim" id="menu-modal">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
-        <button onclick="closeMenuEditor()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
+        <h3 style="font-size:1.1rem; font-weight:800;">Manage Menu Items</h3>
+        <button onclick="closeMenuModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
       <div style="overflow-y:auto; flex:1;">
-        <div style="background:var(--surface); padding:0.85rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1rem;">
-          <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">+ Add New Menu Item</div>
-          <input class="input-box" id="new-item-cat" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-suggestions" />
+        <div style="background:var(--md-surface); padding:1rem; border-radius:16px; border:1px solid var(--md-border); margin-bottom:1rem;">
+          <div style="font-size:0.82rem; font-weight:700; margin-bottom:6px;">+ Add New Menu Item</div>
+          <input class="input-field" id="new-item-cat" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-suggestions" />
           <datalist id="cat-suggestions"></datalist>
-          <input class="input-box" id="new-item-name" placeholder="Item Name (e.g. Steam Chicken Momo)" />
-          <input type="number" class="input-box" id="new-item-price" placeholder="Price (৳)" />
-          <button class="btn-fill" style="margin-top:0;" onclick="saveMenuItem()">Add to Menu</button>
+          <input class="input-field" id="new-item-name" placeholder="Item Name (e.g. Cheese Momo)" />
+          <input type="number" class="input-field" id="new-item-price" placeholder="Price (৳)" />
+          <button class="btn-fill-primary" style="margin-top:0;" onclick="saveMenuItem()">Save Item</button>
         </div>
 
-        <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">Current Menu Items (Tap ✕ to remove)</div>
-        <div id="editable-items"></div>
+        <div style="font-size:0.82rem; font-weight:700; margin-bottom:6px;">Current Menu Items (Tap ✕ to remove)</div>
+        <div id="editable-menu-items"></div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: CLOUD CREDENTIALS -->
+  <!-- MODAL: CLOUD DATABASE SETUP -->
   <div class="scrim" id="cloud-modal">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1rem; font-weight:800;">Cloud Database Settings</h3>
-        <button onclick="closeCloudConfig()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
+        <h3 style="font-size:1.1rem; font-weight:800;">Supabase Database Sync</h3>
+        <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
-        Paste your Supabase credentials once to sync all your phones and computers.
+      <p style="font-size:0.82rem; color:var(--md-text-muted); margin-bottom:1rem; line-height:1.4;">
+        Connect your free Supabase database once to share sales across phones, laptops, and tablets automatically.
       </p>
-      <label style="font-size:0.75rem; font-weight:700;">Project URL</label>
-      <input class="input-box" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
-      <label style="font-size:0.75rem; font-weight:700;">Publishable / Anon Key</label>
-      <input class="input-box" id="sb-key-val" placeholder="sb_publishable_... or eyJhbGci..." />
-      <button class="btn-fill" onclick="saveCloudConfig()">Save & Connect</button>
+      <label style="font-size:0.75rem; font-weight:700; color:var(--md-text-muted);">Project URL</label>
+      <input class="input-field" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
+      <label style="font-size:0.75rem; font-weight:700; color:var(--md-text-muted);">Publishable / Anon Key</label>
+      <input class="input-field" id="sb-key-val" placeholder="sb_publishable_... or eyJhbGci..." />
+      <button class="btn-fill-primary" onclick="saveCloudConfig()">Save & Connect</button>
     </div>
   </div>
 
   <script>
-    // FULL DEFAULT MENU
-    const BASE_MENU = {
+    const DEFAULT_MENU = {
       "🥟 Momo Corner": [
         { name: "Steamed Momo", price: 120 },
         { name: "Kothey Momo", price: 140 },
@@ -502,159 +606,169 @@
       ]
     };
 
-    // State & Migration Resolver (Ensures no data loss between versions)
-    const MASTER_LEDGER_KEY = 'aashi_sales_master_ledger';
+    // Resilient Storage Layer (Handles migration smoothly)
+    const STORAGE_KEY = 'aashi_sales_master_ledger';
     function loadLedger() {
-      let data = localStorage.getItem(MASTER_LEDGER_KEY);
+      let data = localStorage.getItem(STORAGE_KEY);
       if (!data) {
         data = localStorage.getItem('aashi_master_sales_v1') || localStorage.getItem('aashi_ledger_m3') || "{}";
-        localStorage.setItem(MASTER_LEDGER_KEY, data);
+        localStorage.setItem(STORAGE_KEY, data);
       }
       return JSON.parse(data || "{}");
     }
     function saveLedger(ledger) {
-      localStorage.setItem(MASTER_LEDGER_KEY, JSON.stringify(ledger));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ledger));
       localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
     }
 
-    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom') || localStorage.getItem('aashi_menu_v2')) || BASE_MENU;
-    let selectedCategory = Object.keys(menu)[0] || "";
-    let activeCart = {};
-    let subTab = 'orders';
+    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom') || localStorage.getItem('aashi_menu_v2')) || DEFAULT_MENU;
+    let activeCategory = Object.keys(menu)[0] || "";
+    let liveCart = {};
+    let currentSubTab = 'orders';
 
-    function getToday() {
+    function getTodayStr() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-    let selectedDate = getToday();
+    let viewDate = getTodayStr();
 
     // Supabase
-    let supabaseClient = null;
-    const cloudUrl = localStorage.getItem('aashi_sb_url');
-    const cloudKey = localStorage.getItem('aashi_sb_key');
-    if (cloudUrl && cloudKey && window.supabase) {
-      supabaseClient = window.supabase.createClient(cloudUrl, cloudKey);
+    let supabase = null;
+    const sbUrl = localStorage.getItem('aashi_sb_url');
+    const sbKey = localStorage.getItem('aashi_sb_key');
+    if (sbUrl && sbKey && window.supabase) {
+      supabase = window.supabase.createClient(sbUrl, sbKey);
     }
 
-    function boot() {
-      document.getElementById('view-date-input').value = selectedDate;
+    function initApp() {
+      document.getElementById('date-selector').value = viewDate;
       renderCategories();
       renderDishes();
       refreshDashboard();
-      updateSyncStatus();
+      updateSyncUI();
 
-      window.addEventListener('online', () => syncEverything());
-      if (navigator.onLine && supabaseClient) syncEverything();
+      window.addEventListener('online', () => syncAll());
+      if (navigator.onLine && supabase) syncAll();
     }
 
-    // Category & Dishes
+    // Category and Dishes
     function renderCategories() {
-      const strip = document.getElementById('cat-strip');
+      const container = document.getElementById('category-strip');
       const cats = Object.keys(menu);
-      if (!cats.includes(selectedCategory)) selectedCategory = cats[0] || "";
-      strip.innerHTML = cats.map(c => `
-        <button class="cat-item ${c === selectedCategory ? 'active' : ''}" onclick="selectCat('${c}')">${c}</button>
+      if (!cats.includes(activeCategory)) activeCategory = cats[0] || "";
+      container.innerHTML = cats.map(c => `
+        <button class="cat-pill ${c === activeCategory ? 'active' : ''}" onclick="selectCategory('${c}')">${c}</button>
       `).join('');
 
       document.getElementById('cat-suggestions').innerHTML = cats.map(c => `<option value="${c}">`).join('');
     }
 
-    function selectCat(c) {
-      selectedCategory = c;
+    function selectCategory(cat) {
+      activeCategory = cat;
       renderCategories();
       renderDishes();
     }
 
     function renderDishes() {
-      const grid = document.getElementById('dish-grid');
-      const items = menu[selectedCategory] || [];
+      const grid = document.getElementById('menu-dish-grid');
+      const items = menu[activeCategory] || [];
       if (items.length === 0) {
-        grid.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No dishes in this category.</p>`;
+        grid.innerHTML = `<p style="color:var(--md-text-muted); font-size:0.85rem;">No dishes in this category.</p>`;
         return;
       }
       grid.innerHTML = items.map(dish => `
         <div class="dish-card" onclick="addToTicket('${dish.name.replace(/'/g, "\\'")}', ${dish.price})">
-          <div class="dish-name">${dish.name}</div>
-          <div class="dish-meta">
+          <div class="dish-title">${dish.name}</div>
+          <div class="dish-bottom">
             <span class="dish-price">৳${dish.price}</span>
-            <div class="dish-add">+</div>
+            <div class="dish-add-circle">+</div>
           </div>
         </div>
       `).join('');
     }
 
-    // Active Ticket Operations
+    // Ticket / Cart Operations
     function addToTicket(name, price) {
-      if (!activeCart[name]) activeCart[name] = { price, qty: 0 };
-      activeCart[name].qty += 1;
+      if (!liveCart[name]) liveCart[name] = { price, qty: 0 };
+      liveCart[name].qty += 1;
       renderTicket();
     }
 
-    function changeTicketQty(name, delta) {
-      if (!activeCart[name]) return;
-      activeCart[name].qty += delta;
-      if (activeCart[name].qty <= 0) delete activeCart[name];
+    function stepQty(name, delta) {
+      if (!liveCart[name]) return;
+      liveCart[name].qty += delta;
+      if (liveCart[name].qty <= 0) delete liveCart[name];
       renderTicket();
     }
 
     function clearTicket() {
-      activeCart = {};
+      liveCart = {};
       renderTicket();
     }
 
     function renderTicket() {
-      const list = document.getElementById('ticket-list');
-      const totalDisplay = document.getElementById('ticket-total');
-      const countDisplay = document.getElementById('ticket-items-count');
-      const submitBtn = document.getElementById('btn-submit-order');
-      const itemNames = Object.keys(activeCart);
+      const list = document.getElementById('ticket-items');
+      const totalEl = document.getElementById('ticket-total');
+      const countEl = document.getElementById('ticket-count-badge');
+      const submitBtn = document.getElementById('btn-submit');
+      const mobileTotal = document.getElementById('mobile-ticket-total');
+      const mobileCount = document.getElementById('mobile-ticket-count');
+      const items = Object.keys(liveCart);
 
-      if (itemNames.length === 0) {
-        list.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>`;
-        totalDisplay.innerText = "0";
-        countDisplay.innerText = "0 items";
+      if (items.length === 0) {
+        list.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--md-text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>`;
+        totalEl.innerText = "0";
+        countEl.innerText = "0 items";
+        mobileTotal.innerText = "0";
+        mobileCount.innerText = "0";
         submitBtn.disabled = true;
         return;
       }
 
       let subtotal = 0, units = 0;
-      list.innerHTML = itemNames.map(name => {
-        const item = activeCart[name];
-        const lineTotal = item.price * item.qty;
-        subtotal += lineTotal;
-        units += item.qty;
+      list.innerHTML = items.map(name => {
+        const it = liveCart[name];
+        const lineTot = it.price * it.qty;
+        subtotal += lineTot;
+        units += it.qty;
         return `
-          <div class="order-row">
+          <div class="ticket-row">
             <div>
-              <strong>${name}</strong><br/>
-              <span style="font-size:0.75rem; color:var(--text-muted);">৳${item.price} × ${item.qty} = ৳${lineTotal}</span>
+              <div class="ticket-name">${name}</div>
+              <div class="ticket-sub">৳${it.price} × ${it.qty} = ৳${lineTot}</div>
             </div>
             <div class="stepper">
-              <button class="stepper-btn" onclick="changeTicketQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
-              <div style="font-size:0.82rem; font-weight:800; width:18px; text-align:center;">${item.qty}</div>
-              <button class="stepper-btn" onclick="changeTicketQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
+              <button class="stepper-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
+              <div class="stepper-num">${it.qty}</div>
+              <button class="stepper-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
             </div>
           </div>
         `;
       }).join('');
 
-      totalDisplay.innerText = subtotal;
-      countDisplay.innerText = `${units} items`;
+      totalEl.innerText = subtotal;
+      countEl.innerText = `${units} items`;
+      mobileTotal.innerText = subtotal;
+      mobileCount.innerText = units;
       submitBtn.disabled = false;
     }
 
+    function scrollToCart() {
+      document.getElementById('cart-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+
     // Checkout
-    async function completeSale() {
-      const items = Object.keys(activeCart).map(name => ({
+    async function checkoutSale() {
+      const items = Object.keys(liveCart).map(name => ({
         name: name,
-        price: activeCart[name].price,
-        qty: activeCart[name].qty,
-        total: activeCart[name].price * activeCart[name].qty
+        price: liveCart[name].price,
+        qty: liveCart[name].qty,
+        total: liveCart[name].price * liveCart[name].qty
       }));
 
       const grandTotal = items.reduce((s, it) => s + it.total, 0);
       const totalQty = items.reduce((s, it) => s + it.qty, 0);
-      const today = getToday();
+      const today = getTodayStr();
 
       const order = {
         id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random() * 10),
@@ -672,76 +786,76 @@
       saveLedger(ledger);
 
       clearTicket();
-      selectedDate = today;
-      document.getElementById('view-date-input').value = today;
+      viewDate = today;
+      document.getElementById('date-selector').value = today;
       refreshDashboard();
-      updateSyncStatus();
+      updateSyncUI();
 
-      if (supabaseClient && navigator.onLine) {
+      if (supabase && navigator.onLine) {
         await pushPending();
       }
     }
 
-    // Deletion Handlers
+    // Delete Handlers
     async function deleteSingleOrder(orderId) {
       if (!confirm(`Delete order ${orderId}?`)) return;
 
       const ledger = loadLedger();
-      if (ledger[selectedDate]) {
-        ledger[selectedDate] = ledger[selectedDate].filter(o => o.id !== orderId);
-        if (ledger[selectedDate].length === 0) delete ledger[selectedDate];
+      if (ledger[viewDate]) {
+        ledger[viewDate] = ledger[viewDate].filter(o => o.id !== orderId);
+        if (ledger[viewDate].length === 0) delete ledger[viewDate];
         saveLedger(ledger);
       }
 
-      if (supabaseClient && navigator.onLine) {
+      if (supabase && navigator.onLine) {
         try {
-          await supabaseClient.from('orders').delete().eq('id', orderId);
+          await supabase.from('orders').delete().eq('id', orderId);
         } catch (e) {
           console.warn("Could not delete from Supabase:", e);
         }
       }
 
       refreshDashboard();
-      updateSyncStatus();
+      updateSyncUI();
     }
 
-    async function clearCurrentDay() {
-      if (!confirm(`Delete ALL orders for ${selectedDate}?`)) return;
+    async function clearDayRecords() {
+      if (!confirm(`Delete ALL orders for ${viewDate}?`)) return;
 
       const ledger = loadLedger();
-      delete ledger[selectedDate];
+      delete ledger[viewDate];
       saveLedger(ledger);
 
-      if (supabaseClient && navigator.onLine) {
+      if (supabase && navigator.onLine) {
         try {
-          await supabaseClient.from('orders').delete().eq('date', selectedDate);
+          await supabase.from('orders').delete().eq('date', viewDate);
         } catch (e) {
           console.warn("Could not clear day from Supabase:", e);
         }
       }
 
       refreshDashboard();
-      updateSyncStatus();
+      updateSyncUI();
     }
 
-    // Dashboard
+    // Dashboard & Metrics
     function setSubTab(t) {
-      subTab = t;
-      document.getElementById('tab-orders').className = `segmented-tab ${t === 'orders' ? 'active' : ''}`;
-      document.getElementById('tab-breakdown').className = `segmented-tab ${t === 'breakdown' ? 'active' : ''}`;
+      currentSubTab = t;
+      document.getElementById('tab-orders').className = `segment-tab ${t === 'orders' ? 'active' : ''}`;
+      document.getElementById('tab-breakdown').className = `segment-tab ${t === 'breakdown' ? 'active' : ''}`;
       refreshDashboard();
     }
 
     function setDateView(d) {
       if (!d) return;
-      selectedDate = d;
-      document.getElementById('date-badge').innerText = (selectedDate === getToday()) ? "Today" : selectedDate;
+      viewDate = d;
+      document.getElementById('active-date-badge').innerText = (viewDate === getTodayStr()) ? "Today" : viewDate;
       refreshDashboard();
     }
 
     function refreshDashboard() {
       const ledger = loadLedger();
-      const orders = ledger[selectedDate] || [];
+      const orders = ledger[viewDate] || [];
 
       let rev = 0, units = 0;
       const breakdown = {};
@@ -756,37 +870,37 @@
         });
       });
 
-      document.getElementById('metric-rev').innerText = rev;
+      document.getElementById('metric-revenue').innerText = rev;
       document.getElementById('metric-orders').innerText = orders.length;
-      document.getElementById('metric-units').innerText = units;
+      document.getElementById('metric-items').innerText = units;
 
       const view = document.getElementById('report-view');
       if (orders.length === 0) {
-        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--text-muted); font-size:0.8rem;">No sales recorded for this date.</p>`;
+        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--md-text-muted); font-size:0.8rem;">No sales recorded for this date.</p>`;
         return;
       }
 
-      if (subTab === 'orders') {
+      if (currentSubTab === 'orders') {
         view.innerHTML = orders.map(o => `
-          <div class="history-row">
+          <div class="record-row">
             <div>
-              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">${o.time}</span>
-              ${o.synced === false ? '<span style="color:#d97706; font-size:0.7rem; font-weight:700;"> (Offline)</span>' : ''}
+              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--md-text-muted);">${o.time}</span>
+              ${o.synced === false ? '<span style="color:#d97706; font-size:0.7rem; font-weight:800;"> (Offline)</span>' : ''}
               <br/>
-              <span style="font-size:0.75rem; color:#4b5563;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
+              <span style="font-size:0.75rem; color:#6b7280;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <strong style="color:var(--primary);">৳${o.orderTotal}</strong>
-              <button class="btn-delete" title="Delete" onclick="deleteSingleOrder('${o.id}')">✕</button>
+              <strong style="color:var(--md-primary);">৳${o.orderTotal}</strong>
+              <button class="btn-del-circle" title="Delete" onclick="deleteSingleOrder('${o.id}')">✕</button>
             </div>
           </div>
         `).join('');
       } else {
         const sorted = Object.keys(breakdown).sort((a,b) => breakdown[b].qty - breakdown[a].qty);
         view.innerHTML = sorted.map(name => `
-          <div class="history-row">
-            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${breakdown[name].qty} sold</span></div>
-            <strong style="color:var(--primary);">৳${breakdown[name].revenue}</strong>
+          <div class="record-row">
+            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--md-text-muted);">${breakdown[name].qty} sold</span></div>
+            <strong style="color:var(--md-primary);">৳${breakdown[name].revenue}</strong>
           </div>
         `).join('');
       }
@@ -803,7 +917,7 @@
     }
 
     async function pushPending() {
-      if (!supabaseClient || !navigator.onLine) return;
+      if (!supabase || !navigator.onLine) return;
       const pending = getPending();
       if (pending.length === 0) return;
 
@@ -811,7 +925,7 @@
         const rows = pending.map(o => ({
           id: o.id, date: o.date, time: o.time, items: o.items, totalQty: o.totalQty, orderTotal: o.orderTotal
         }));
-        const { error } = await supabaseClient.from('orders').upsert(rows);
+        const { error } = await supabase.from('orders').upsert(rows);
         if (!error) {
           const ledger = loadLedger();
           Object.keys(ledger).forEach(d => {
@@ -820,16 +934,16 @@
           saveLedger(ledger);
         }
       } catch (err) {
-        console.warn("Sync failed, queued locally.", err);
+        console.warn("Push failed, kept in local queue.", err);
       }
       refreshDashboard();
-      updateSyncStatus();
+      updateSyncUI();
     }
 
     async function pullCloud() {
-      if (!supabaseClient || !navigator.onLine) return;
+      if (!supabase || !navigator.onLine) return;
       try {
-        const { data, error } = await supabaseClient.from('orders').select('*');
+        const { data, error } = await supabase.from('orders').select('*');
         if (!error && data) {
           const ledger = loadLedger();
           data.forEach(co => {
@@ -845,69 +959,69 @@
       }
     }
 
-    async function syncEverything() {
+    async function syncAll() {
       await pushPending();
       await pullCloud();
-      updateSyncStatus();
+      updateSyncUI();
     }
 
     async function manualSync() {
-      if (!supabaseClient) {
-        openCloudConfig();
+      if (!supabase) {
+        openCloudModal();
         return;
       }
-      document.getElementById('sync-txt').innerText = "Syncing...";
-      await syncEverything();
+      document.getElementById('sync-text').innerText = "Syncing...";
+      await syncAll();
     }
 
-    function updateSyncStatus() {
-      const pill = document.getElementById('sync-chip');
-      const txt = document.getElementById('sync-txt');
+    function updateSyncUI() {
+      const pill = document.getElementById('sync-btn');
+      const txt = document.getElementById('sync-text');
       const ico = document.getElementById('sync-icon');
       const pendingCount = getPending().length;
 
-      if (!supabaseClient) {
+      if (!supabase) {
         ico.innerText = "⚙️";
         txt.innerText = "No Cloud";
-        pill.className = "chip-btn";
+        pill.className = "m3-btn-tonal";
         return;
       }
 
       if (!navigator.onLine) {
         ico.innerText = "⚠️";
         txt.innerText = `Offline (${pendingCount})`;
-        pill.className = "chip-btn pending";
+        pill.className = "m3-btn-tonal pending";
         return;
       }
 
       if (pendingCount > 0) {
         ico.innerText = "🔄";
         txt.innerText = `Sync (${pendingCount})`;
-        pill.className = "chip-btn pending";
+        pill.className = "m3-btn-tonal pending";
       } else {
         ico.innerText = "☁️";
         txt.innerText = "Connected";
-        pill.className = "chip-btn synced";
+        pill.className = "m3-btn-tonal synced";
       }
     }
 
-    // Modals & Menu Manager
-    function openMenuEditor() {
+    // Manage Menu Modal
+    function openMenuModal() {
       renderEditableList();
       document.getElementById('menu-modal').style.display = 'flex';
     }
-    function closeMenuEditor() { document.getElementById('menu-modal').style.display = 'none'; }
+    function closeMenuModal() { document.getElementById('menu-modal').style.display = 'none'; }
 
     function renderEditableList() {
-      const box = document.getElementById('editable-items');
+      const box = document.getElementById('editable-menu-items');
       let html = '';
       Object.keys(menu).forEach(cat => {
-        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin:8px 0 4px 0;">${cat}</div>`;
+        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--md-primary); margin:10px 0 4px 0;">${cat}</div>`;
         menu[cat].forEach((it, idx) => {
           html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #fdf2e9; font-size:0.8rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f8f4ef; font-size:0.82rem;">
               <span>${it.name} (৳${it.price})</span>
-              <button class="btn-delete" style="width:22px; height:22px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
+              <button class="btn-del-circle" style="width:24px; height:24px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
             </div>
           `;
         });
@@ -920,7 +1034,7 @@
       const name = document.getElementById('new-item-name').value.trim();
       const price = parseFloat(document.getElementById('new-item-price').value);
 
-      if (!cat || !name || isNaN(price)) return alert("Please provide a category, item name, and price.");
+      if (!cat || !name || isNaN(price)) return alert("Please enter category, dish name, and valid price.");
 
       if (!menu[cat]) menu[cat] = [];
       menu[cat].push({ name, price });
@@ -944,41 +1058,43 @@
       renderDishes();
     }
 
-    function openCloudConfig() {
+    // Cloud Modal
+    function openCloudModal() {
       document.getElementById('sb-url-val').value = localStorage.getItem('aashi_sb_url') || '';
       document.getElementById('sb-key-val').value = localStorage.getItem('aashi_sb_key') || '';
       document.getElementById('cloud-modal').style.display = 'flex';
     }
-    function closeCloudConfig() { document.getElementById('cloud-modal').style.display = 'none'; }
+    function closeCloudModal() { document.getElementById('cloud-modal').style.display = 'none'; }
 
     function saveCloudConfig() {
       const url = document.getElementById('sb-url-val').value.trim();
       const key = document.getElementById('sb-key-val').value.trim();
       localStorage.setItem('aashi_sb_url', url);
       localStorage.setItem('aashi_sb_key', key);
-      closeCloudConfig();
+      closeCloudModal();
       location.reload();
     }
 
+    // Export CSV
     function exportCSV() {
       const ledger = loadLedger();
-      const orders = ledger[selectedDate] || [];
-      if (orders.length === 0) return alert("No sales for " + selectedDate);
+      const orders = ledger[viewDate] || [];
+      if (orders.length === 0) return alert("No sales recorded for " + viewDate);
 
       let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
       orders.forEach(o => {
         o.items.forEach(i => {
-          csv += `"${selectedDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
+          csv += `"${viewDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
         });
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `Aashi_Sales_${selectedDate}.csv`;
+      a.download = `Aashi_Sales_${viewDate}.csv`;
       a.click();
     }
 
-    window.onload = boot;
+    window.onload = initApp;
   </script>
 </body>
 </html>
