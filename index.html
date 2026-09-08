@@ -5,125 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Aashi Momo & Maozhu | Material POS</title>
   
-  <!-- Google Fonts: Roboto & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Google Material You (M3) Design Tokens */
     :root {
-      --md-sys-color-primary: #8f4c38;
-      --md-sys-color-on-primary: #ffffff;
-      --md-sys-color-primary-container: #ffdbd1;
-      --md-sys-color-on-primary-container: #3a0b01;
-      
-      --md-sys-color-secondary: #77574e;
-      --md-sys-color-secondary-container: #ffdbd1;
-      --md-sys-color-on-secondary-container: #2c150f;
-      
-      --md-sys-color-tertiary: #6c5d2f;
-      --md-sys-color-tertiary-container: #f5e1a7;
-      --md-sys-color-on-tertiary-container: #231b00;
-
-      --md-sys-color-surface: #fff8f6;
-      --md-sys-color-surface-dim: #e8d6d2;
-      --md-sys-color-surface-bright: #fff8f6;
-      --md-sys-color-surface-container-lowest: #ffffff;
-      --md-sys-color-surface-container-low: #fceae5;
-      --md-sys-color-surface-container: #f7e4e0;
-      --md-sys-color-surface-container-high: #f1deda;
-      --md-sys-color-surface-container-highest: #ebd9d4;
-
-      --md-sys-color-on-surface: #231917;
-      --md-sys-color-on-surface-variant: #53433f;
-      --md-sys-color-outline: #85736e;
-      --md-sys-color-outline-variant: #d8c2bc;
-
-      --md-sys-color-error: #ba1a1a;
-      --md-sys-color-error-container: #ffdad6;
-      --md-sys-color-on-error-container: #410002;
-
-      --md-sys-color-success: #196941;
-      --md-sys-color-success-container: #a4f2bd;
-      --md-sys-color-on-success-container: #002110;
-
-      --md-shape-corner-small: 8px;
-      --md-shape-corner-medium: 16px;
-      --md-shape-corner-large: 24px;
-      --md-shape-corner-full: 9999px;
+      --primary: #c2410c;
+      --primary-container: #ffedd5;
+      --on-primary-container: #7c2d12;
+      --surface: #fff7ed;
+      --surface-card: #ffffff;
+      --surface-container: #ffedd5;
+      --border: #fed7aa;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --danger: #dc2626;
+      --danger-container: #fee2e2;
+      --success: #16a34a;
+      --success-container: #dcfce7;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-full: 9999px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); padding-bottom: 40px; }
+    body { background-color: var(--surface); color: var(--text-main); padding-bottom: 40px; }
 
-    /* Material Top App Bar */
-    .top-app-bar {
-      background-color: var(--md-sys-color-surface-container-low);
+    /* Top Bar */
+    .top-bar {
+      background: white;
+      border-bottom: 1px solid var(--border);
       padding: 0.75rem 1.25rem;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 40;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--md-sys-color-outline-variant);
-    }
-    .brand-title {
-      display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 10px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--md-sys-color-on-surface);
-      letter-spacing: -0.2px;
     }
-    .brand-title .icon-bubble {
-      background-color: var(--md-sys-color-primary-container);
-      color: var(--md-sys-color-on-primary-container);
-      width: 38px;
-      height: 38px;
-      border-radius: var(--md-shape-corner-medium);
+    .brand {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
+      gap: 8px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
     }
-    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-    /* Material 3 Action Chips / Buttons */
-    .m3-chip {
-      background-color: var(--md-sys-color-surface-container-highest);
-      color: var(--md-sys-color-on-surface);
-      border: 1px solid var(--md-sys-color-outline-variant);
-      border-radius: var(--md-shape-corner-full);
+    /* M3 Chips & Buttons */
+    .chip-btn {
+      background: var(--surface-container);
+      color: var(--on-primary-container);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
       padding: 6px 14px;
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+      transition: all 0.15s;
     }
-    .m3-chip:active { transform: scale(0.96); }
-    .m3-chip.active-sync {
-      background-color: var(--md-sys-color-success-container);
-      color: var(--md-sys-color-on-success-container);
-      border-color: transparent;
-    }
-    .m3-chip.offline-warning {
-      background-color: var(--md-sys-color-error-container);
-      color: var(--md-sys-color-on-error-container);
-      border-color: transparent;
-    }
+    .chip-btn:active { transform: scale(0.96); }
+    .chip-btn.synced { background: var(--success-container); color: var(--success); border-color: #bbf7d0; }
+    .chip-btn.pending { background: #fef08a; color: #854d0e; border-color: #fde047; }
 
     /* Layout */
-    .app-container {
+    .app-shell {
       max-width: 1200px;
       margin: 1.25rem auto;
       padding: 0 1rem;
@@ -132,400 +92,370 @@
       gap: 1.25rem;
     }
     @media (min-width: 960px) {
-      .app-container { grid-template-columns: 1.35fr 0.85fr; }
+      .app-shell { grid-template-columns: 1.35fr 0.85fr; }
     }
 
-    /* Horizontal Category Scroll */
-    .category-scroll-bar {
+    /* Categories Strip */
+    .category-strip {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
       margin-bottom: 8px;
       scrollbar-width: none;
     }
-    .category-scroll-bar::-webkit-scrollbar { display: none; }
-    .category-pill {
-      background-color: var(--md-sys-color-surface-container);
-      color: var(--md-sys-color-on-surface-variant);
-      border: 1px solid var(--md-sys-color-outline-variant);
-      border-radius: var(--md-shape-corner-medium);
+    .category-strip::-webkit-scrollbar { display: none; }
+    .cat-item {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text-main);
       padding: 8px 16px;
+      border-radius: var(--radius-full);
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
-    .category-pill.active {
-      background-color: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
+    .cat-item.active {
+      background: var(--primary);
+      color: white;
       border-color: transparent;
-      box-shadow: 0 3px 6px rgba(143, 76, 56, 0.25);
+      box-shadow: 0 2px 8px rgba(194, 65, 12, 0.3);
     }
 
-    /* Dish Menu Grid */
+    /* Dish Grid */
     .dish-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 10px;
     }
     .dish-card {
-      background-color: var(--md-sys-color-surface-container-lowest);
-      border: 1px solid var(--md-sys-color-outline-variant);
-      border-radius: var(--md-shape-corner-large);
-      padding: 1rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 110px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 105px;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-    .dish-card:hover {
-      background-color: var(--md-sys-color-surface-container-low);
-      border-color: var(--md-sys-color-primary);
-      transform: translateY(-2px);
-    }
+    .dish-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .dish-card:active { transform: scale(0.97); }
-    .dish-title { font-size: 0.9rem; font-weight: 700; color: var(--md-sys-color-on-surface); line-height: 1.25; }
-    .dish-card-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 12px;
-    }
-    .dish-price { font-size: 1rem; font-weight: 800; color: var(--md-sys-color-primary); }
-    .dish-add-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--md-shape-corner-full);
-      background-color: var(--md-sys-color-primary-container);
-      color: var(--md-sys-color-on-primary-container);
+    .dish-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
+    .dish-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+    .dish-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+    .dish-add {
+      background: var(--primary-container);
+      color: var(--primary);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    /* Material Surface Cards */
-    .m3-card {
-      background-color: var(--md-sys-color-surface-container-lowest);
-      border-radius: var(--md-shape-corner-large);
-      border: 1px solid var(--md-sys-color-outline-variant);
+    /* Cards */
+    .panel-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       padding: 1.25rem;
       margin-bottom: 1.25rem;
     }
-    .m3-card-header {
+    .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
     }
-    .m3-card-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--md-sys-color-on-surface); }
+    .panel-title { font-size: 1.05rem; font-weight: 800; }
 
-    /* Cart / Ticket Items */
-    .ticket-list { max-height: 250px; overflow-y: auto; }
-    .ticket-row {
+    /* Active Cart */
+    .order-list { max-height: 250px; overflow-y: auto; }
+    .order-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--md-sys-color-surface-container-highest);
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #fdf2e9;
     }
-    .ticket-row-title { font-size: 0.88rem; font-weight: 700; color: var(--md-sys-color-on-surface); }
-    .ticket-row-sub { font-size: 0.75rem; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
-    
-    .qty-stepper {
+    .stepper {
       display: flex;
       align-items: center;
       gap: 6px;
-      background-color: var(--md-sys-color-surface-container-high);
-      border-radius: var(--md-shape-corner-full);
+      background: #fdf2e9;
+      border-radius: var(--radius-full);
       padding: 3px;
     }
-    .qty-btn {
+    .stepper-btn {
       width: 26px;
       height: 26px;
-      border-radius: var(--md-shape-corner-full);
+      border-radius: 50%;
       border: none;
-      background-color: var(--md-sys-color-surface-container-lowest);
-      color: var(--md-sys-color-on-surface);
+      background: white;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .qty-num { font-size: 0.82rem; font-weight: 800; min-width: 18px; text-align: center; }
 
-    .order-total-bar {
+    .bill-checkout-bar {
       margin-top: 1rem;
       padding-top: 0.75rem;
-      border-top: 2px dashed var(--md-sys-color-outline-variant);
+      border-top: 2px dashed var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .order-total-text { font-size: 0.82rem; font-weight: 600; color: var(--md-sys-color-on-surface-variant); }
-    .order-total-val { font-size: 1.5rem; font-weight: 900; color: var(--md-sys-color-primary); }
+    .bill-val { font-size: 1.45rem; font-weight: 900; color: var(--primary); }
 
-    .btn-m3-fill {
+    .btn-fill {
       width: 100%;
       margin-top: 1rem;
-      padding: 0.95rem;
-      border-radius: var(--md-shape-corner-full);
+      padding: 0.85rem;
+      border-radius: var(--radius-full);
       border: none;
-      background-color: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
+      background: var(--primary);
+      color: white;
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(143, 76, 56, 0.3);
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
-    .btn-m3-fill:disabled { background-color: var(--md-sys-color-outline-variant); color: var(--md-sys-color-on-surface-variant); box-shadow: none; cursor: not-allowed; }
+    .btn-fill:disabled { background: #cbd5e1; cursor: not-allowed; }
 
-    /* Daily Stats Dashboard */
-    .metric-row {
+    /* Metrics Strip */
+    .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 1.25rem;
-    }
-    .metric-box {
-      background-color: var(--md-sys-color-surface-container-low);
-      border-radius: var(--md-shape-corner-medium);
-      padding: 0.85rem 0.5rem;
-      text-align: center;
-    }
-    .metric-box-label { font-size: 0.7rem; font-weight: 700; color: var(--md-sys-color-on-surface-variant); text-transform: uppercase; }
-    .metric-box-val { font-size: 1.25rem; font-weight: 800; color: var(--md-sys-color-on-surface); margin-top: 4px; }
-
-    /* Segmented Tab Controls */
-    .m3-segmented {
-      display: flex;
-      background-color: var(--md-sys-color-surface-container);
-      border-radius: var(--md-shape-corner-full);
-      padding: 4px;
+      gap: 8px;
       margin-bottom: 1rem;
     }
-    .segmented-btn {
+    .stat-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.4rem;
+      text-align: center;
+    }
+    .stat-lbl { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .stat-num { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+
+    /* Segmented Controls */
+    .segmented-bar {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      margin-bottom: 1rem;
+    }
+    .segmented-tab {
       flex: 1;
-      padding: 8px;
-      border-radius: var(--md-shape-corner-full);
+      padding: 6px;
+      border-radius: var(--radius-full);
       border: none;
       background: transparent;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: var(--md-sys-color-on-surface-variant);
+      color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s;
     }
-    .segmented-btn.active {
-      background-color: var(--md-sys-color-surface-container-lowest);
-      color: var(--md-sys-color-primary);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    .segmented-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
-    /* History & Delete Elements */
-    .history-item {
+    /* History & Delete List */
+    .history-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.65rem 0;
-      border-bottom: 1px solid var(--md-sys-color-surface-container);
+      border-bottom: 1px solid #fdf2e9;
+      font-size: 0.82rem;
     }
-    .delete-action-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--md-shape-corner-full);
+    .btn-delete {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
       border: none;
-      background-color: var(--md-sys-color-error-container);
-      color: var(--md-sys-color-on-error-container);
+      background: var(--danger-container);
+      color: var(--danger);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.2s;
+      font-weight: 700;
     }
-    .delete-action-btn:hover { background-color: #ffb4ab; }
 
-    /* Dialog / Modals */
-    .modal-scrim {
+    /* Modals */
+    .scrim {
       position: fixed;
       inset: 0;
-      background-color: rgba(35, 25, 23, 0.4);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(3px);
       z-index: 100;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 1rem;
     }
-    .modal-surface {
-      background-color: var(--md-sys-color-surface-container-low);
-      border-radius: var(--md-shape-corner-large);
+    .modal-box {
+      background: white;
+      border-radius: var(--radius-md);
       max-width: 480px;
       width: 100%;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
-      padding: 1.5rem;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      padding: 1.25rem;
     }
-    .modal-surface-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .modal-surface-body { overflow-y: auto; flex: 1; }
-    .m3-input-field {
+    .input-box {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--md-shape-corner-small);
-      border: 1px solid var(--md-sys-color-outline);
-      background-color: var(--md-sys-color-surface-container-lowest);
-      color: var(--md-sys-color-on-surface);
-      font-size: 0.88rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
       outline: none;
-      margin-bottom: 0.85rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- Material App Header -->
-  <header class="top-app-bar">
-    <div class="brand-title">
-      <div class="icon-bubble">🥟</div>
-      <div>
-        <span>AASHI MOMO</span>
-        <span style="font-size:0.75rem; display:block; font-weight:500; color:var(--md-sys-color-on-surface-variant);">& MAOZHU STATION</span>
-      </div>
+  <!-- Top Navigation -->
+  <header class="top-bar">
+    <div class="brand">
+      <span>🥟 AASHI MOMO & MAOZHU</span>
     </div>
-    <div class="top-actions">
-      <button id="sync-pill" class="m3-chip" onclick="manualSync()">
-        <span id="sync-icon">☁️</span>
-        <span id="sync-text">Connected</span>
+    <div class="actions-bar">
+      <button id="sync-chip" class="chip-btn" onclick="manualSync()">
+        <span id="sync-icon">☁️</span> <span id="sync-txt">Sync: Connected</span>
       </button>
-      <button class="m3-chip" onclick="openMenuEditor()">⚙️ Menu</button>
-      <button class="m3-chip" onclick="openCloudModal()">🔑 Cloud</button>
-      <input type="date" id="calendar-picker" onchange="switchDate(this.value)" style="border:1px solid var(--md-sys-color-outline-variant); background:transparent; border-radius:999px; padding:5px 10px; font-weight:700; color:var(--md-sys-color-on-surface);" />
+      <button class="chip-btn" onclick="openMenuEditor()">⚙️ Edit Menu</button>
+      <button class="chip-btn" onclick="openCloudConfig()">🔑 Cloud</button>
+      <input type="date" id="view-date-input" onchange="setDateView(this.value)" style="border:1px solid var(--border); border-radius:999px; padding:5px 10px; font-weight:700; background:white;" />
     </div>
   </header>
 
-  <main class="app-container">
-    <!-- LEFT: MENU -->
-    <section>
-      <div class="category-scroll-bar" id="cat-strip"></div>
+  <div class="app-shell">
+    <!-- LEFT: CATEGORIES & DISHES -->
+    <div>
+      <div class="category-strip" id="cat-strip"></div>
       <div class="dish-grid" id="dish-grid"></div>
-    </section>
+    </div>
 
-    <!-- RIGHT: ORDER DOCK & DAILY DASHBOARD -->
-    <section>
-      <!-- Active Ticket -->
-      <div class="m3-card">
-        <div class="m3-card-header">
-          <h2>Active Ticket</h2>
-          <button onclick="clearTicket()" style="background:none; border:none; color:var(--md-sys-color-error); font-weight:700; font-size:0.8rem; cursor:pointer;">Reset</button>
+    <!-- RIGHT: CART & PERFORMANCE -->
+    <div>
+      <!-- Current Order -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Active Order</span>
+          <button onclick="clearTicket()" style="background:none; border:none; color:var(--danger); font-size:0.75rem; font-weight:700; cursor:pointer;">Clear Ticket</button>
         </div>
-        <div class="ticket-list" id="ticket-items">
-          <p style="text-align:center; padding: 2rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">
-            🛒 Ticket is empty. Tap items to add.
-          </p>
+        <div class="order-list" id="ticket-list">
+          <p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
         </div>
-        <div class="order-total-bar">
+        <div class="bill-checkout-bar">
           <div>
-            <div class="order-total-text">Total Bill Due</div>
-            <div class="order-total-val">৳ <span id="bill-total-price">0</span></div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Amount Due</div>
+            <div class="bill-val">৳ <span id="ticket-total">0</span></div>
           </div>
-          <span id="bill-item-count" style="background:var(--md-sys-color-surface-container); padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 Items</span>
+          <span id="ticket-items-count" style="background:var(--surface-container); padding:4px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 items</span>
         </div>
-        <button id="btn-record-sale" class="btn-m3-fill" onclick="recordSale()" disabled>Record Sale</button>
+        <button id="btn-submit-order" class="btn-fill" onclick="completeSale()" disabled>Record Sale</button>
       </div>
 
       <!-- Daily Sales Summary -->
-      <div class="m3-card">
-        <div class="m3-card-header">
-          <h2>Daily Sales Ledger</h2>
-          <span id="date-label-badge" style="background:var(--md-sys-color-primary-container); color:var(--md-sys-color-on-primary-container); padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">Today</span>
+      <div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Daily Summary</span>
+          <span id="date-badge" style="background:var(--primary-container); color:var(--on-primary-container); padding:3px 8px; border-radius:999px; font-size:0.75rem; font-weight:700;">Today</span>
         </div>
 
-        <div class="metric-row">
-          <div class="metric-box">
-            <div class="metric-box-label">Revenue</div>
-            <div class="metric-box-val" style="color:var(--md-sys-color-primary);">৳<span id="metric-revenue">0</span></div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-lbl">Revenue</div>
+            <div class="stat-num" style="color:var(--primary);">৳<span id="metric-rev">0</span></div>
           </div>
-          <div class="metric-box">
-            <div class="metric-box-label">Tickets</div>
-            <div class="metric-box-val" id="metric-tickets">0</div>
+          <div class="stat-item">
+            <div class="stat-lbl">Orders</div>
+            <div class="stat-num" id="metric-orders">0</div>
           </div>
-          <div class="metric-box">
-            <div class="metric-box-label">Units Sold</div>
-            <div class="metric-box-val" id="metric-quantity">0</div>
+          <div class="stat-item">
+            <div class="stat-lbl">Items Sold</div>
+            <div class="stat-num" id="metric-units">0</div>
           </div>
         </div>
 
-        <!-- Segmented Tab Controls -->
-        <div class="m3-segmented">
-          <button class="segmented-btn active" id="tab-orders" onclick="toggleReportTab('orders')">Order History</button>
-          <button class="segmented-btn" id="tab-breakdown" onclick="toggleReportTab('breakdown')">Item Breakdown</button>
+        <!-- Sub Tabs -->
+        <div class="segmented-bar">
+          <button class="segmented-tab active" id="tab-orders" onclick="setSubTab('orders')">Order History</button>
+          <button class="segmented-tab" id="tab-breakdown" onclick="setSubTab('breakdown')">Item Breakdown</button>
         </div>
 
-        <div style="max-height: 220px; overflow-y: auto;" id="report-content-view"></div>
+        <div style="max-height: 220px; overflow-y: auto;" id="report-view"></div>
 
-        <!-- Export & Clear Actions -->
-        <div style="display: flex; gap: 8px; margin-top: 1rem;">
-          <button class="m3-chip" style="flex:1; justify-content:center; padding:10px;" onclick="exportDailyCSV()">📥 Download CSV</button>
-          <button class="m3-chip" style="color:var(--md-sys-color-error); border-color:var(--md-sys-color-error-container); justify-content:center; padding:10px;" onclick="clearActiveDateLedger()">🗑️ Clear Day</button>
+        <!-- Action Buttons -->
+        <div style="display:flex; gap:8px; margin-top:1rem;">
+          <button class="chip-btn" style="flex:1; justify-content:center; padding:10px;" onclick="exportCSV()">📥 Download CSV</button>
+          <button class="chip-btn" style="color:var(--danger); border-color:#fecaca; justify-content:center; padding:10px;" onclick="clearCurrentDay()">🗑️ Clear Day</button>
         </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL: ADD / DELETE MENU ITEMS -->
-  <div class="modal-scrim" id="menu-modal">
-    <div class="modal-surface">
-      <div class="modal-surface-header">
-        <h3 style="font-size:1.1rem; font-weight:700;">Edit Restaurant Menu</h3>
-        <button onclick="closeMenuEditor()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
-      </div>
-      <div class="modal-surface-body">
-        <div style="background:var(--md-sys-color-surface-container-lowest); padding:1rem; border-radius:16px; border:1px solid var(--md-sys-color-outline-variant); margin-bottom:1rem;">
-          <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px;">+ Add New Menu Item</div>
-          <input class="m3-input-field" id="new-dish-category" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-hints" />
-          <datalist id="cat-hints"></datalist>
-          <input class="m3-input-field" id="new-dish-name" placeholder="Item Name (e.g. Cheese Momo)" />
-          <input type="number" class="m3-input-field" id="new-dish-price" placeholder="Price (৳)" />
-          <button class="btn-m3-fill" style="margin-top:0;" onclick="submitNewDish()">Save Item</button>
-        </div>
-
-        <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px;">Current Menu (Tap ✕ to remove)</div>
-        <div id="editable-menu-list"></div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: SUPABASE CREDENTIALS -->
-  <div class="modal-scrim" id="cloud-modal">
-    <div class="modal-surface">
-      <div class="modal-surface-header">
-        <h3 style="font-size:1.1rem; font-weight:700;">Cloud Database Settings</h3>
-        <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
+  <!-- MODAL: MENU EDITOR -->
+  <div class="scrim" id="menu-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
+        <button onclick="closeMenuEditor()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
-      <div class="modal-surface-body">
-        <p style="font-size:0.8rem; color:var(--md-sys-color-on-surface-variant); margin-bottom:1rem; line-height:1.4;">
-          Syncs all devices automatically using your free Supabase setup.
-        </p>
-        <label style="font-size:0.75rem; font-weight:700; color:var(--md-sys-color-on-surface-variant);">Project URL</label>
-        <input class="m3-input-field" id="sb-url-input" placeholder="https://xyz.supabase.co" />
-        <label style="font-size:0.75rem; font-weight:700; color:var(--md-sys-color-on-surface-variant);">Publishable / Anon Key</label>
-        <input class="m3-input-field" id="sb-key-input" placeholder="sb_publishable_... or eyJ..." />
-        <button class="btn-m3-fill" onclick="persistCloudSettings()">Save & Reconnect</button>
+      <div style="overflow-y:auto; flex:1;">
+        <div style="background:var(--surface); padding:0.85rem; border-radius:8px; border:1px solid var(--border); margin-bottom:1rem;">
+          <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">+ Add New Menu Item</div>
+          <input class="input-box" id="new-item-cat" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-suggestions" />
+          <datalist id="cat-suggestions"></datalist>
+          <input class="input-box" id="new-item-name" placeholder="Item Name (e.g. Steam Chicken Momo)" />
+          <input type="number" class="input-box" id="new-item-price" placeholder="Price (৳)" />
+          <button class="btn-fill" style="margin-top:0;" onclick="saveMenuItem()">Add to Menu</button>
+        </div>
+
+        <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">Current Menu Items (Tap ✕ to remove)</div>
+        <div id="editable-items"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CLOUD CREDENTIALS -->
+  <div class="scrim" id="cloud-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1rem; font-weight:800;">Cloud Database Settings</h3>
+        <button onclick="closeCloudConfig()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+        Paste your Supabase credentials once to sync all your phones and computers.
+      </p>
+      <label style="font-size:0.75rem; font-weight:700;">Project URL</label>
+      <input class="input-box" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
+      <label style="font-size:0.75rem; font-weight:700;">Publishable / Anon Key</label>
+      <input class="input-box" id="sb-key-val" placeholder="sb_publishable_... or eyJhbGci..." />
+      <button class="btn-fill" onclick="saveCloudConfig()">Save & Connect</button>
     </div>
   </div>
 
   <script>
-    // DEFAULT RESTAURANT MENU
+    // FULL DEFAULT MENU
     const BASE_MENU = {
       "🥟 Momo Corner": [
         { name: "Steamed Momo", price: 120 },
@@ -572,340 +502,342 @@
       ]
     };
 
-    let menu = JSON.parse(localStorage.getItem('aashi_menu_v2')) || BASE_MENU;
-    let selectedCategory = Object.keys(menu)[0] || "";
-    let activeTicket = {};
-    let activeReportTab = 'orders';
+    // State & Migration Resolver (Ensures no data loss between versions)
+    const MASTER_LEDGER_KEY = 'aashi_sales_master_ledger';
+    function loadLedger() {
+      let data = localStorage.getItem(MASTER_LEDGER_KEY);
+      if (!data) {
+        data = localStorage.getItem('aashi_master_sales_v1') || localStorage.getItem('aashi_ledger_m3') || "{}";
+        localStorage.setItem(MASTER_LEDGER_KEY, data);
+      }
+      return JSON.parse(data || "{}");
+    }
+    function saveLedger(ledger) {
+      localStorage.setItem(MASTER_LEDGER_KEY, JSON.stringify(ledger));
+      localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
+    }
 
-    function getTodayString() {
+    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom') || localStorage.getItem('aashi_menu_v2')) || BASE_MENU;
+    let selectedCategory = Object.keys(menu)[0] || "";
+    let activeCart = {};
+    let subTab = 'orders';
+
+    function getToday() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-    let viewingDate = getTodayString();
+    let selectedDate = getToday();
 
-    // Supabase Initialization
-    let supabase = null;
-    const sbUrl = localStorage.getItem('aashi_sb_url');
-    const sbKey = localStorage.getItem('aashi_sb_key');
-    if (sbUrl && sbKey && window.supabase) {
-      supabase = window.supabase.createClient(sbUrl, sbKey);
+    // Supabase
+    let supabaseClient = null;
+    const cloudUrl = localStorage.getItem('aashi_sb_url');
+    const cloudKey = localStorage.getItem('aashi_sb_key');
+    if (cloudUrl && cloudKey && window.supabase) {
+      supabaseClient = window.supabase.createClient(cloudUrl, cloudKey);
     }
 
-    function initApp() {
-      document.getElementById('calendar-picker').value = viewingDate;
-      renderCategoryStrip();
-      renderDishGrid();
+    function boot() {
+      document.getElementById('view-date-input').value = selectedDate;
+      renderCategories();
+      renderDishes();
       refreshDashboard();
-      updateSyncUI();
+      updateSyncStatus();
 
-      window.addEventListener('online', () => syncAllData());
-      if (navigator.onLine && supabase) syncAllData();
+      window.addEventListener('online', () => syncEverything());
+      if (navigator.onLine && supabaseClient) syncEverything();
     }
 
-    // UI RENDERERS
-    function renderCategoryStrip() {
+    // Category & Dishes
+    function renderCategories() {
       const strip = document.getElementById('cat-strip');
       const cats = Object.keys(menu);
       if (!cats.includes(selectedCategory)) selectedCategory = cats[0] || "";
-      strip.innerHTML = cats.map(cat => `
-        <button class="category-pill ${cat === selectedCategory ? 'active' : ''}" onclick="pickCategory('${cat}')">${cat}</button>
+      strip.innerHTML = cats.map(c => `
+        <button class="cat-item ${c === selectedCategory ? 'active' : ''}" onclick="selectCat('${c}')">${c}</button>
       `).join('');
 
-      document.getElementById('cat-hints').innerHTML = cats.map(c => `<option value="${c}">`).join('');
+      document.getElementById('cat-suggestions').innerHTML = cats.map(c => `<option value="${c}">`).join('');
     }
 
-    function pickCategory(c) {
+    function selectCat(c) {
       selectedCategory = c;
-      renderCategoryStrip();
-      renderDishGrid();
+      renderCategories();
+      renderDishes();
     }
 
-    function renderDishGrid() {
+    function renderDishes() {
       const grid = document.getElementById('dish-grid');
       const items = menu[selectedCategory] || [];
       if (items.length === 0) {
-        grid.innerHTML = `<p style="color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">No items in this category.</p>`;
+        grid.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No dishes in this category.</p>`;
         return;
       }
       grid.innerHTML = items.map(dish => `
-        <div class="dish-card" onclick="addToOrder('${dish.name.replace(/'/g, "\\'")}', ${dish.price})">
-          <div class="dish-title">${dish.name}</div>
-          <div class="dish-card-bottom">
+        <div class="dish-card" onclick="addToTicket('${dish.name.replace(/'/g, "\\'")}', ${dish.price})">
+          <div class="dish-name">${dish.name}</div>
+          <div class="dish-meta">
             <span class="dish-price">৳${dish.price}</span>
-            <div class="dish-add-btn">+</div>
+            <div class="dish-add">+</div>
           </div>
         </div>
       `).join('');
     }
 
-    // ORDER TICKET ACTIONS
-    function addToOrder(name, price) {
-      if (!activeTicket[name]) activeTicket[name] = { price, qty: 0 };
-      activeTicket[name].qty += 1;
-      renderActiveTicket();
+    // Active Ticket Operations
+    function addToTicket(name, price) {
+      if (!activeCart[name]) activeCart[name] = { price, qty: 0 };
+      activeCart[name].qty += 1;
+      renderTicket();
     }
 
-    function stepQty(name, delta) {
-      if (!activeTicket[name]) return;
-      activeTicket[name].qty += delta;
-      if (activeTicket[name].qty <= 0) delete activeTicket[name];
-      renderActiveTicket();
+    function changeTicketQty(name, delta) {
+      if (!activeCart[name]) return;
+      activeCart[name].qty += delta;
+      if (activeCart[name].qty <= 0) delete activeCart[name];
+      renderTicket();
     }
 
     function clearTicket() {
-      activeTicket = {};
-      renderActiveTicket();
+      activeCart = {};
+      renderTicket();
     }
 
-    function renderActiveTicket() {
-      const container = document.getElementById('ticket-items');
-      const totalDisplay = document.getElementById('bill-total-price');
-      const countDisplay = document.getElementById('bill-item-count');
-      const submitBtn = document.getElementById('btn-record-sale');
-      const keys = Object.keys(activeTicket);
+    function renderTicket() {
+      const list = document.getElementById('ticket-list');
+      const totalDisplay = document.getElementById('ticket-total');
+      const countDisplay = document.getElementById('ticket-items-count');
+      const submitBtn = document.getElementById('btn-submit-order');
+      const itemNames = Object.keys(activeCart);
 
-      if (keys.length === 0) {
-        container.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">🛒 Ticket is empty. Tap items to add.</p>`;
+      if (itemNames.length === 0) {
+        list.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>`;
         totalDisplay.innerText = "0";
-        countDisplay.innerText = "0 Items";
+        countDisplay.innerText = "0 items";
         submitBtn.disabled = true;
         return;
       }
 
-      let subtotal = 0, itemCount = 0;
-      container.innerHTML = keys.map(name => {
-        const item = activeTicket[name];
+      let subtotal = 0, units = 0;
+      list.innerHTML = itemNames.map(name => {
+        const item = activeCart[name];
         const lineTotal = item.price * item.qty;
         subtotal += lineTotal;
-        itemCount += item.qty;
+        units += item.qty;
         return `
-          <div class="ticket-row">
+          <div class="order-row">
             <div>
-              <div class="ticket-row-title">${name}</div>
-              <div class="ticket-row-sub">৳${item.price} × ${item.qty} = ৳${lineTotal}</div>
+              <strong>${name}</strong><br/>
+              <span style="font-size:0.75rem; color:var(--text-muted);">৳${item.price} × ${item.qty} = ৳${lineTotal}</span>
             </div>
-            <div class="qty-stepper">
-              <button class="qty-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
-              <div class="qty-num">${item.qty}</div>
-              <button class="qty-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
+            <div class="stepper">
+              <button class="stepper-btn" onclick="changeTicketQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
+              <div style="font-size:0.82rem; font-weight:800; width:18px; text-align:center;">${item.qty}</div>
+              <button class="stepper-btn" onclick="changeTicketQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
             </div>
           </div>
         `;
       }).join('');
 
       totalDisplay.innerText = subtotal;
-      countDisplay.innerText = `${itemCount} Items`;
+      countDisplay.innerText = `${units} items`;
       submitBtn.disabled = false;
     }
 
-    // CHECKOUT ORDER
-    async function recordSale() {
-      const items = Object.keys(activeTicket).map(name => ({
+    // Checkout
+    async function completeSale() {
+      const items = Object.keys(activeCart).map(name => ({
         name: name,
-        price: activeTicket[name].price,
-        qty: activeTicket[name].qty,
-        total: activeTicket[name].price * activeTicket[name].qty
+        price: activeCart[name].price,
+        qty: activeCart[name].qty,
+        total: activeCart[name].price * activeCart[name].qty
       }));
 
       const grandTotal = items.reduce((s, it) => s + it.total, 0);
-      const totalQuantity = items.reduce((s, it) => s + it.qty, 0);
-      const today = getTodayString();
+      const totalQty = items.reduce((s, it) => s + it.qty, 0);
+      const today = getToday();
 
       const order = {
-        id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random()*10),
+        id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random() * 10),
         date: today,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         items: items,
-        totalQty: totalQuantity,
+        totalQty: totalQty,
         orderTotal: grandTotal,
         synced: false
       };
 
-      // 1. Save Locally
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      const ledger = loadLedger();
       if (!ledger[today]) ledger[today] = [];
       ledger[today].unshift(order);
-      localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+      saveLedger(ledger);
 
-      // Reset Ticket
       clearTicket();
-      viewingDate = today;
-      document.getElementById('calendar-picker').value = today;
+      selectedDate = today;
+      document.getElementById('view-date-input').value = today;
       refreshDashboard();
-      updateSyncUI();
+      updateSyncStatus();
 
-      // 2. Upload to Cloud if connected
-      if (supabase && navigator.onLine) {
-        await pushPendingOrders();
+      if (supabaseClient && navigator.onLine) {
+        await pushPending();
       }
     }
 
-    // DELETION LOGIC (Single order & whole day)
+    // Deletion Handlers
     async function deleteSingleOrder(orderId) {
-      if (!confirm(`Delete order ${orderId}? This cannot be undone.`)) return;
+      if (!confirm(`Delete order ${orderId}?`)) return;
 
-      // 1. Delete from local storage
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-      if (ledger[viewingDate]) {
-        ledger[viewingDate] = ledger[viewingDate].filter(o => o.id !== orderId);
-        if (ledger[viewingDate].length === 0) delete ledger[viewingDate];
-        localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+      const ledger = loadLedger();
+      if (ledger[selectedDate]) {
+        ledger[selectedDate] = ledger[selectedDate].filter(o => o.id !== orderId);
+        if (ledger[selectedDate].length === 0) delete ledger[selectedDate];
+        saveLedger(ledger);
       }
 
-      // 2. Delete from Supabase
-      if (supabase && navigator.onLine) {
+      if (supabaseClient && navigator.onLine) {
         try {
-          await supabase.from('orders').delete().eq('id', orderId);
+          await supabaseClient.from('orders').delete().eq('id', orderId);
         } catch (e) {
-          console.error("Cloud deletion failed:", e);
+          console.warn("Could not delete from Supabase:", e);
         }
       }
 
       refreshDashboard();
-      updateSyncUI();
+      updateSyncStatus();
     }
 
-    async function clearActiveDateLedger() {
-      if (!confirm(`Are you sure you want to delete ALL entries for ${viewingDate}?`)) return;
+    async function clearCurrentDay() {
+      if (!confirm(`Delete ALL orders for ${selectedDate}?`)) return;
 
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-      delete ledger[viewingDate];
-      localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+      const ledger = loadLedger();
+      delete ledger[selectedDate];
+      saveLedger(ledger);
 
-      if (supabase && navigator.onLine) {
+      if (supabaseClient && navigator.onLine) {
         try {
-          await supabase.from('orders').delete().eq('date', viewingDate);
+          await supabaseClient.from('orders').delete().eq('date', selectedDate);
         } catch (e) {
-          console.error("Cloud day wipe failed:", e);
+          console.warn("Could not clear day from Supabase:", e);
         }
       }
 
       refreshDashboard();
-      updateSyncUI();
+      updateSyncStatus();
     }
 
-    // DASHBOARD & BREAKDOWN
-    function toggleReportTab(tab) {
-      activeReportTab = tab;
-      document.getElementById('tab-orders').className = `segmented-btn ${tab === 'orders' ? 'active' : ''}`;
-      document.getElementById('tab-breakdown').className = `segmented-btn ${tab === 'breakdown' ? 'active' : ''}`;
+    // Dashboard
+    function setSubTab(t) {
+      subTab = t;
+      document.getElementById('tab-orders').className = `segmented-tab ${t === 'orders' ? 'active' : ''}`;
+      document.getElementById('tab-breakdown').className = `segmented-tab ${t === 'breakdown' ? 'active' : ''}`;
       refreshDashboard();
     }
 
-    function switchDate(d) {
+    function setDateView(d) {
       if (!d) return;
-      viewingDate = d;
-      document.getElementById('date-label-badge').innerText = (viewingDate === getTodayString()) ? "Today" : viewingDate;
+      selectedDate = d;
+      document.getElementById('date-badge').innerText = (selectedDate === getToday()) ? "Today" : selectedDate;
       refreshDashboard();
     }
 
     function refreshDashboard() {
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-      const orders = ledger[viewingDate] || [];
+      const ledger = loadLedger();
+      const orders = ledger[selectedDate] || [];
 
-      let rev = 0, totalUnits = 0;
+      let rev = 0, units = 0;
       const breakdown = {};
 
-      orders.forEach(ord => {
-        rev += parseFloat(ord.orderTotal);
-        totalUnits += parseInt(ord.totalQty);
-        ord.items.forEach(it => {
-          if (!breakdown[it.name]) breakdown[it.name] = { qty: 0, revenue: 0 };
-          breakdown[it.name].qty += it.qty;
-          breakdown[it.name].revenue += it.total;
+      orders.forEach(o => {
+        rev += parseFloat(o.orderTotal);
+        units += parseInt(o.totalQty);
+        o.items.forEach(i => {
+          if (!breakdown[i.name]) breakdown[i.name] = { qty: 0, revenue: 0 };
+          breakdown[i.name].qty += i.qty;
+          breakdown[i.name].revenue += i.total;
         });
       });
 
-      document.getElementById('metric-revenue').innerText = rev;
-      document.getElementById('metric-tickets').innerText = orders.length;
-      document.getElementById('metric-quantity').innerText = totalUnits;
+      document.getElementById('metric-rev').innerText = rev;
+      document.getElementById('metric-orders').innerText = orders.length;
+      document.getElementById('metric-units').innerText = units;
 
-      const view = document.getElementById('report-content-view');
+      const view = document.getElementById('report-view');
       if (orders.length === 0) {
-        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.8rem;">No sales recorded for this date.</p>`;
+        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--text-muted); font-size:0.8rem;">No sales recorded for this date.</p>`;
         return;
       }
 
-      if (activeReportTab === 'orders') {
-        view.innerHTML = orders.map(ord => `
-          <div class="history-item">
+      if (subTab === 'orders') {
+        view.innerHTML = orders.map(o => `
+          <div class="history-row">
             <div>
-              <strong>${ord.id}</strong> <span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${ord.time}</span>
-              ${ord.synced === false ? '<span style="color:var(--md-sys-color-error); font-size:0.7rem; font-weight:800; margin-left:4px;">(Offline)</span>' : ''}
+              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">${o.time}</span>
+              ${o.synced === false ? '<span style="color:#d97706; font-size:0.7rem; font-weight:700;"> (Offline)</span>' : ''}
               <br/>
-              <span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${ord.items.map(i => `${i.qty}x ${i.name}`).join(', ')}</span>
+              <span style="font-size:0.75rem; color:#4b5563;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <strong style="color:var(--md-sys-color-primary);">৳${ord.orderTotal}</strong>
-              <button class="delete-action-btn" title="Delete entry" onclick="deleteSingleOrder('${ord.id}')">✕</button>
+              <strong style="color:var(--primary);">৳${o.orderTotal}</strong>
+              <button class="btn-delete" title="Delete" onclick="deleteSingleOrder('${o.id}')">✕</button>
             </div>
           </div>
         `).join('');
       } else {
         const sorted = Object.keys(breakdown).sort((a,b) => breakdown[b].qty - breakdown[a].qty);
-        view.innerHTML = sorted.map(dish => `
-          <div class="history-item">
-            <div><strong>${dish}</strong><br><span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${breakdown[dish].qty} sold</span></div>
-            <strong style="color:var(--md-sys-color-primary);">৳${breakdown[dish].revenue}</strong>
+        view.innerHTML = sorted.map(name => `
+          <div class="history-row">
+            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${breakdown[name].qty} sold</span></div>
+            <strong style="color:var(--primary);">৳${breakdown[name].revenue}</strong>
           </div>
         `).join('');
       }
     }
 
-    // SUPABASE SYNC LOGIC
-    function getPendingUnsynced() {
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-      const pending = [];
-      Object.keys(ledger).forEach(dt => {
-        ledger[dt].forEach(o => {
-          if (!o.synced) pending.push(o);
-        });
+    // Cloud Sync
+    function getPending() {
+      const ledger = loadLedger();
+      const list = [];
+      Object.keys(ledger).forEach(d => {
+        ledger[d].forEach(o => { if (!o.synced) list.push(o); });
       });
-      return pending;
+      return list;
     }
 
-    async function pushPendingOrders() {
-      if (!supabase || !navigator.onLine) return;
-      const pending = getPendingUnsynced();
+    async function pushPending() {
+      if (!supabaseClient || !navigator.onLine) return;
+      const pending = getPending();
       if (pending.length === 0) return;
 
       try {
-        const payloads = pending.map(o => ({
-          id: o.id,
-          date: o.date,
-          time: o.time,
-          items: o.items,
-          totalQty: o.totalQty,
-          orderTotal: o.orderTotal
+        const rows = pending.map(o => ({
+          id: o.id, date: o.date, time: o.time, items: o.items, totalQty: o.totalQty, orderTotal: o.orderTotal
         }));
-
-        const { error } = await supabase.from('orders').upsert(payloads);
+        const { error } = await supabaseClient.from('orders').upsert(rows);
         if (!error) {
-          const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-          Object.keys(ledger).forEach(dt => {
-            ledger[dt].forEach(o => { o.synced = true; });
+          const ledger = loadLedger();
+          Object.keys(ledger).forEach(d => {
+            ledger[d].forEach(o => { o.synced = true; });
           });
-          localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+          saveLedger(ledger);
         }
       } catch (err) {
-        console.warn("Sync deferral:", err);
+        console.warn("Sync failed, queued locally.", err);
       }
       refreshDashboard();
-      updateSyncUI();
+      updateSyncStatus();
     }
 
-    async function pullCloudOrders() {
-      if (!supabase || !navigator.onLine) return;
+    async function pullCloud() {
+      if (!supabaseClient || !navigator.onLine) return;
       try {
-        const { data, error } = await supabase.from('orders').select('*');
+        const { data, error } = await supabaseClient.from('orders').select('*');
         if (!error && data) {
-          const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+          const ledger = loadLedger();
           data.forEach(co => {
             if (!ledger[co.date]) ledger[co.date] = [];
             const exists = ledger[co.date].some(lo => lo.id === co.id);
             if (!exists) ledger[co.date].unshift({ ...co, synced: true });
           });
-          localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+          saveLedger(ledger);
           refreshDashboard();
         }
       } catch (err) {
@@ -913,53 +845,53 @@
       }
     }
 
-    async function syncAllData() {
-      await pushPendingOrders();
-      await pullCloudOrders();
-      updateSyncUI();
+    async function syncEverything() {
+      await pushPending();
+      await pullCloud();
+      updateSyncStatus();
     }
 
     async function manualSync() {
-      if (!supabase) {
-        openCloudModal();
+      if (!supabaseClient) {
+        openCloudConfig();
         return;
       }
-      document.getElementById('sync-text').innerText = "Syncing...";
-      await syncAllData();
+      document.getElementById('sync-txt').innerText = "Syncing...";
+      await syncEverything();
     }
 
-    function updateSyncUI() {
-      const pill = document.getElementById('sync-pill');
-      const txt = document.getElementById('sync-text');
+    function updateSyncStatus() {
+      const pill = document.getElementById('sync-chip');
+      const txt = document.getElementById('sync-txt');
       const ico = document.getElementById('sync-icon');
-      const pending = getPendingUnsynced().length;
+      const pendingCount = getPending().length;
 
-      if (!supabase) {
+      if (!supabaseClient) {
         ico.innerText = "⚙️";
         txt.innerText = "No Cloud";
-        pill.className = "m3-chip";
+        pill.className = "chip-btn";
         return;
       }
 
       if (!navigator.onLine) {
         ico.innerText = "⚠️";
-        txt.innerText = `Offline (${pending})`;
-        pill.className = "m3-chip offline-warning";
+        txt.innerText = `Offline (${pendingCount})`;
+        pill.className = "chip-btn pending";
         return;
       }
 
-      if (pending > 0) {
+      if (pendingCount > 0) {
         ico.innerText = "🔄";
-        txt.innerText = `Sync (${pending})`;
-        pill.className = "m3-chip offline-warning";
+        txt.innerText = `Sync (${pendingCount})`;
+        pill.className = "chip-btn pending";
       } else {
         ico.innerText = "☁️";
         txt.innerText = "Connected";
-        pill.className = "m3-chip active-sync";
+        pill.className = "chip-btn synced";
       }
     }
 
-    // MENU EDITOR
+    // Modals & Menu Manager
     function openMenuEditor() {
       renderEditableList();
       document.getElementById('menu-modal').style.display = 'flex';
@@ -967,88 +899,86 @@
     function closeMenuEditor() { document.getElementById('menu-modal').style.display = 'none'; }
 
     function renderEditableList() {
-      const container = document.getElementById('editable-menu-list');
+      const box = document.getElementById('editable-items');
       let html = '';
       Object.keys(menu).forEach(cat => {
-        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--md-sys-color-primary); margin:10px 0 4px 0;">${cat}</div>`;
+        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin:8px 0 4px 0;">${cat}</div>`;
         menu[cat].forEach((it, idx) => {
           html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--md-sys-color-surface-container); font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #fdf2e9; font-size:0.8rem;">
               <span>${it.name} (৳${it.price})</span>
-              <button class="delete-action-btn" style="width:22px; height:22px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
+              <button class="btn-delete" style="width:22px; height:22px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
             </div>
           `;
         });
       });
-      container.innerHTML = html;
+      box.innerHTML = html;
     }
 
-    function submitNewDish() {
-      const cat = document.getElementById('new-dish-category').value.trim();
-      const name = document.getElementById('new-dish-name').value.trim();
-      const price = parseFloat(document.getElementById('new-dish-price').value);
+    function saveMenuItem() {
+      const cat = document.getElementById('new-item-cat').value.trim();
+      const name = document.getElementById('new-item-name').value.trim();
+      const price = parseFloat(document.getElementById('new-item-price').value);
 
-      if (!cat || !name || isNaN(price)) return alert("Please fill in category, dish name, and valid price.");
+      if (!cat || !name || isNaN(price)) return alert("Please provide a category, item name, and price.");
 
       if (!menu[cat]) menu[cat] = [];
       menu[cat].push({ name, price });
-      localStorage.setItem('aashi_menu_v2', JSON.stringify(menu));
+      localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
 
-      document.getElementById('new-dish-name').value = '';
-      document.getElementById('new-dish-price').value = '';
+      document.getElementById('new-item-name').value = '';
+      document.getElementById('new-item-price').value = '';
 
       renderEditableList();
-      renderCategoryStrip();
-      renderDishGrid();
+      renderCategories();
+      renderDishes();
     }
 
     function deleteMenuItem(cat, idx) {
       if (!confirm(`Delete this item?`)) return;
       menu[cat].splice(idx, 1);
       if (menu[cat].length === 0) delete menu[cat];
-      localStorage.setItem('aashi_menu_v2', JSON.stringify(menu));
+      localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
       renderEditableList();
-      renderCategoryStrip();
-      renderDishGrid();
+      renderCategories();
+      renderDishes();
     }
 
-    // CLOUD MODAL
-    function openCloudModal() {
-      document.getElementById('sb-url-input').value = localStorage.getItem('aashi_sb_url') || '';
-      document.getElementById('sb-key-input').value = localStorage.getItem('aashi_sb_key') || '';
+    function openCloudConfig() {
+      document.getElementById('sb-url-val').value = localStorage.getItem('aashi_sb_url') || '';
+      document.getElementById('sb-key-val').value = localStorage.getItem('aashi_sb_key') || '';
       document.getElementById('cloud-modal').style.display = 'flex';
     }
-    function closeCloudModal() { document.getElementById('cloud-modal').style.display = 'none'; }
+    function closeCloudConfig() { document.getElementById('cloud-modal').style.display = 'none'; }
 
-    function persistCloudSettings() {
-      const url = document.getElementById('sb-url-input').value.trim();
-      const key = document.getElementById('sb-key-input').value.trim();
+    function saveCloudConfig() {
+      const url = document.getElementById('sb-url-val').value.trim();
+      const key = document.getElementById('sb-key-val').value.trim();
       localStorage.setItem('aashi_sb_url', url);
       localStorage.setItem('aashi_sb_key', key);
-      closeCloudModal();
+      closeCloudConfig();
       location.reload();
     }
 
-    // CSV DOWNLOAD
-    function exportDailyCSV() {
-      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
-      const orders = ledger[viewingDate] || [];
-      if (orders.length === 0) return alert("No sales for " + viewingDate);
+    function exportCSV() {
+      const ledger = loadLedger();
+      const orders = ledger[selectedDate] || [];
+      if (orders.length === 0) return alert("No sales for " + selectedDate);
 
       let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
       orders.forEach(o => {
         o.items.forEach(i => {
-          csv += `"${viewingDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
+          csv += `"${selectedDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
         });
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `Aashi_Sales_${viewingDate}.csv`;
+      a.download = `Aashi_Sales_${selectedDate}.csv`;
       a.click();
     }
 
-    window.onload = initApp;
+    window.onload = boot;
   </script>
 </body>
 </html>
