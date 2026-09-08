@@ -3,265 +3,360 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Aashi Momo & Maozhu | Cloud POS</title>
+  <title>Aashi Momo & Maozhu | Material POS</title>
+  
+  <!-- Google Fonts: Roboto & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Supabase CDN for free instant cloud syncing -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  
+  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    /* Google Material You (M3) Design Tokens */
     :root {
-      --primary: #ea580c;
-      --primary-dark: #c2410c;
-      --primary-light: #ffedd5;
-      --accent: #dc2626;
-      --dark: #0f172a;
-      --bg: #f8fafc;
-      --border: #f1f5f9;
-      --border-dark: #e2e8f0;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --success: #10b981;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+      --md-sys-color-primary: #8f4c38;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-primary-container: #ffdbd1;
+      --md-sys-color-on-primary-container: #3a0b01;
+      
+      --md-sys-color-secondary: #77574e;
+      --md-sys-color-secondary-container: #ffdbd1;
+      --md-sys-color-on-secondary-container: #2c150f;
+      
+      --md-sys-color-tertiary: #6c5d2f;
+      --md-sys-color-tertiary-container: #f5e1a7;
+      --md-sys-color-on-tertiary-container: #231b00;
+
+      --md-sys-color-surface: #fff8f6;
+      --md-sys-color-surface-dim: #e8d6d2;
+      --md-sys-color-surface-bright: #fff8f6;
+      --md-sys-color-surface-container-lowest: #ffffff;
+      --md-sys-color-surface-container-low: #fceae5;
+      --md-sys-color-surface-container: #f7e4e0;
+      --md-sys-color-surface-container-high: #f1deda;
+      --md-sys-color-surface-container-highest: #ebd9d4;
+
+      --md-sys-color-on-surface: #231917;
+      --md-sys-color-on-surface-variant: #53433f;
+      --md-sys-color-outline: #85736e;
+      --md-sys-color-outline-variant: #d8c2bc;
+
+      --md-sys-color-error: #ba1a1a;
+      --md-sys-color-error-container: #ffdad6;
+      --md-sys-color-on-error-container: #410002;
+
+      --md-sys-color-success: #196941;
+      --md-sys-color-success-container: #a4f2bd;
+      --md-sys-color-on-success-container: #002110;
+
+      --md-shape-corner-small: 8px;
+      --md-shape-corner-medium: 16px;
+      --md-shape-corner-large: 24px;
+      --md-shape-corner-full: 9999px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 40px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); padding-bottom: 40px; }
 
-    /* Nav */
-    .navbar {
-      background: white;
-      border-bottom: 1px solid var(--border-dark);
-      padding: 0.85rem 1.25rem;
+    /* Material Top App Bar */
+    .top-app-bar {
+      background-color: var(--md-sys-color-surface-container-low);
+      padding: 0.75rem 1.25rem;
       position: sticky;
       top: 0;
       z-index: 50;
-      box-shadow: var(--shadow-sm);
-    }
-    .navbar-inner {
-      max-width: 1200px;
-      margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
     }
     .brand-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--dark);
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-    .brand-title span {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-actions { display: flex; gap: 8px; align-items: center; }
-    .btn-nav {
-      background: var(--bg);
-      border: 1px solid var(--border-dark);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
+      gap: 10px;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: var(--text);
+      color: var(--md-sys-color-on-surface);
+      letter-spacing: -0.2px;
+    }
+    .brand-title .icon-bubble {
+      background-color: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--md-shape-corner-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+
+    /* Material 3 Action Chips / Buttons */
+    .m3-chip {
+      background-color: var(--md-sys-color-surface-container-highest);
+      color: var(--md-sys-color-on-surface);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-shape-corner-full);
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .m3-chip:active { transform: scale(0.96); }
+    .m3-chip.active-sync {
+      background-color: var(--md-sys-color-success-container);
+      color: var(--md-sys-color-on-success-container);
+      border-color: transparent;
+    }
+    .m3-chip.offline-warning {
+      background-color: var(--md-sys-color-error-container);
+      color: var(--md-sys-color-on-error-container);
+      border-color: transparent;
     }
 
     /* Layout */
-    .main-layout {
+    .app-container {
       max-width: 1200px;
-      margin: 1rem auto;
+      margin: 1.25rem auto;
       padding: 0 1rem;
       display: grid;
       grid-template-columns: 1fr;
       gap: 1.25rem;
     }
     @media (min-width: 960px) {
-      .main-layout { grid-template-columns: 1.35fr 0.85fr; }
+      .app-container { grid-template-columns: 1.35fr 0.85fr; }
     }
 
-    /* Category Bar */
-    .cat-bar {
+    /* Horizontal Category Scroll */
+    .category-scroll-bar {
       display: flex;
-      gap: 0.5rem;
+      gap: 8px;
       overflow-x: auto;
-      padding-bottom: 0.75rem;
-      margin-bottom: 0.75rem;
+      padding-bottom: 10px;
+      margin-bottom: 8px;
       scrollbar-width: none;
     }
-    .cat-bar::-webkit-scrollbar { display: none; }
-    .cat-pill {
-      padding: 0.55rem 1rem;
-      border-radius: 9999px;
-      background: white;
-      border: 1px solid var(--border-dark);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      cursor: pointer;
+    .category-scroll-bar::-webkit-scrollbar { display: none; }
+    .category-pill {
+      background-color: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface-variant);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-shape-corner-medium);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
       white-space: nowrap;
+      cursor: pointer;
       transition: all 0.2s;
     }
-    .cat-pill.active {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
+    .category-pill.active {
+      background-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
       border-color: transparent;
-      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+      box-shadow: 0 3px 6px rgba(143, 76, 56, 0.25);
     }
 
-    /* Menu Cards */
-    .menu-grid {
+    /* Dish Menu Grid */
+    .dish-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
     }
     .dish-card {
-      background: white;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      padding: 0.9rem;
-      cursor: pointer;
-      box-shadow: var(--shadow-sm);
+      background-color: var(--md-sys-color-surface-container-lowest);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-shape-corner-large);
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 100px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      min-height: 110px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .dish-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .dish-card:hover {
+      background-color: var(--md-sys-color-surface-container-low);
+      border-color: var(--md-sys-color-primary);
+      transform: translateY(-2px);
+    }
     .dish-card:active { transform: scale(0.97); }
-    .dish-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); line-height: 1.3; }
-    .dish-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-    .dish-price { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
-    .add-indicator {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      color: var(--primary);
+    .dish-title { font-size: 0.9rem; font-weight: 700; color: var(--md-sys-color-on-surface); line-height: 1.25; }
+    .dish-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .dish-price { font-size: 1rem; font-weight: 800; color: var(--md-sys-color-primary); }
+    .dish-add-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--md-shape-corner-full);
+      background-color: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
-      font-weight: 800;
+      font-size: 1rem;
+      font-weight: 700;
     }
 
-    /* Side Cards */
-    .glass-card {
-      background: white;
-      border-radius: 20px;
-      border: 1px solid var(--border-dark);
+    /* Material Surface Cards */
+    .m3-card {
+      background-color: var(--md-sys-color-surface-container-lowest);
+      border-radius: var(--md-shape-corner-large);
+      border: 1px solid var(--md-sys-color-outline-variant);
       padding: 1.25rem;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
-    .card-header-clean {
+    .m3-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
     }
-    .card-header-clean h2 { font-size: 1rem; font-weight: 800; color: var(--dark); }
+    .m3-card-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--md-sys-color-on-surface); }
 
-    /* Order Cart */
-    .order-items { max-height: 260px; overflow-y: auto; }
-    .order-line {
+    /* Cart / Ticket Items */
+    .ticket-list { max-height: 250px; overflow-y: auto; }
+    .ticket-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--md-sys-color-surface-container-highest);
+    }
+    .ticket-row-title { font-size: 0.88rem; font-weight: 700; color: var(--md-sys-color-on-surface); }
+    .ticket-row-sub { font-size: 0.75rem; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
+    
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--md-sys-color-surface-container-high);
+      border-radius: var(--md-shape-corner-full);
+      padding: 3px;
+    }
+    .qty-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--md-shape-corner-full);
+      border: none;
+      background-color: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-on-surface);
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qty-num { font-size: 0.82rem; font-weight: 800; min-width: 18px; text-align: center; }
+
+    .order-total-bar {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 2px dashed var(--md-sys-color-outline-variant);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .order-total-text { font-size: 0.82rem; font-weight: 600; color: var(--md-sys-color-on-surface-variant); }
+    .order-total-val { font-size: 1.5rem; font-weight: 900; color: var(--md-sys-color-primary); }
+
+    .btn-m3-fill {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.95rem;
+      border-radius: var(--md-shape-corner-full);
+      border: none;
+      background-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(143, 76, 56, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-m3-fill:disabled { background-color: var(--md-sys-color-outline-variant); color: var(--md-sys-color-on-surface-variant); box-shadow: none; cursor: not-allowed; }
+
+    /* Daily Stats Dashboard */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    .metric-box {
+      background-color: var(--md-sys-color-surface-container-low);
+      border-radius: var(--md-shape-corner-medium);
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+    }
+    .metric-box-label { font-size: 0.7rem; font-weight: 700; color: var(--md-sys-color-on-surface-variant); text-transform: uppercase; }
+    .metric-box-val { font-size: 1.25rem; font-weight: 800; color: var(--md-sys-color-on-surface); margin-top: 4px; }
+
+    /* Segmented Tab Controls */
+    .m3-segmented {
+      display: flex;
+      background-color: var(--md-sys-color-surface-container);
+      border-radius: var(--md-shape-corner-full);
+      padding: 4px;
+      margin-bottom: 1rem;
+    }
+    .segmented-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--md-shape-corner-full);
+      border: none;
+      background: transparent;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .segmented-btn.active {
+      background-color: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* History & Delete Elements */
+    .history-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.65rem 0;
-      border-bottom: 1px solid #f8fafc;
+      border-bottom: 1px solid var(--md-sys-color-surface-container);
     }
-    .order-line-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
-    .order-line-meta { font-size: 0.75rem; color: var(--text-muted); }
-    .counter-wrap {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f1f5f9;
-      border-radius: 9999px;
-      padding: 2px;
-    }
-    .count-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
+    .delete-action-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--md-shape-corner-full);
       border: none;
-      background: white;
-      font-weight: 700;
+      background-color: var(--md-sys-color-error-container);
+      color: var(--md-sys-color-on-error-container);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background-color 0.2s;
     }
-    .summary-bill {
-      border-top: 2px dashed #f1f5f9;
-      padding-top: 1rem;
-      margin-top: 0.8rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .bill-total-val { font-size: 1.45rem; font-weight: 800; color: var(--dark); }
+    .delete-action-btn:hover { background-color: #ffb4ab; }
 
-    .btn-checkout {
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.9rem;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-    }
-    .btn-checkout:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
-
-    /* Dashboard Metrics */
-    .metric-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.65rem;
-      margin-bottom: 1rem;
-    }
-    .mini-stat {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 0.75rem 0.5rem;
-      text-align: center;
-      border: 1px solid #f1f5f9;
-    }
-    .stat-caption { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
-    .stat-number { font-size: 1.15rem; font-weight: 800; color: var(--dark); margin-top: 2px; }
-
-    .subtabs { display: flex; border-bottom: 1px solid var(--border-dark); margin-bottom: 0.75rem; }
-    .subtab-btn {
-      flex: 1;
-      padding: 0.5rem;
-      background: none;
-      border: none;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-    }
-    .subtab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .scroll-table { max-height: 200px; overflow-y: auto; font-size: 0.8rem; }
-    .row-record { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f8fafc; }
-
-    /* Modal for Menu Editing & Settings */
-    .modal-overlay {
+    /* Dialog / Modals */
+    .modal-scrim {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
+      background-color: rgba(35, 25, 23, 0.4);
       backdrop-filter: blur(4px);
       z-index: 100;
       display: none;
@@ -269,194 +364,169 @@
       justify-content: center;
       padding: 1rem;
     }
-    .modal-card {
-      background: white;
-      border-radius: 20px;
-      max-width: 500px;
+    .modal-surface {
+      background-color: var(--md-sys-color-surface-container-low);
+      border-radius: var(--md-shape-corner-large);
+      max-width: 480px;
       width: 100%;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
-      padding: 1.25rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .modal-body { overflow-y: auto; flex: 1; padding-right: 4px; }
-    .form-group { margin-bottom: 0.85rem; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .form-control {
+    .modal-surface-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .modal-surface-body { overflow-y: auto; flex: 1; }
+    .m3-input-field {
       width: 100%;
-      padding: 0.6rem 0.8rem;
-      border-radius: 10px;
-      border: 1px solid var(--border-dark);
-      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--md-shape-corner-small);
+      border: 1px solid var(--md-sys-color-outline);
+      background-color: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-on-surface);
+      font-size: 0.88rem;
       outline: none;
-    }
-    .btn-action-full {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 10px;
-      border: none;
-      background: var(--primary);
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .menu-manager-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.82rem;
-    }
-    .btn-delete {
-      background: #fee2e2;
-      border: none;
-      color: var(--accent);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
+      margin-bottom: 0.85rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-inner">
-      <div class="brand-title">🥟 <span>AASHI MOMO & MAOZHU</span></div>
-      <div class="nav-actions">
-        <button class="btn-nav" onclick="openMenuModal()">⚙️ Edit Menu</button>
-        <button class="btn-nav" onclick="openCloudModal()">☁️ Sync</button>
-        <input type="date" id="date-picker" onchange="changeActiveDate(this.value)" style="border:1px solid var(--border-dark); border-radius:999px; padding:4px 8px; font-size:0.75rem; font-weight:600; outline:none;" />
+  <!-- Material App Header -->
+  <header class="top-app-bar">
+    <div class="brand-title">
+      <div class="icon-bubble">🥟</div>
+      <div>
+        <span>AASHI MOMO</span>
+        <span style="font-size:0.75rem; display:block; font-weight:500; color:var(--md-sys-color-on-surface-variant);">& MAOZHU STATION</span>
       </div>
     </div>
-  </nav>
-
-  <div class="main-layout">
-    <!-- LEFT: MENU LIST -->
-    <div>
-      <div class="cat-bar" id="category-bar"></div>
-      <div class="menu-grid" id="dish-list"></div>
+    <div class="top-actions">
+      <button id="sync-pill" class="m3-chip" onclick="manualSync()">
+        <span id="sync-icon">☁️</span>
+        <span id="sync-text">Connected</span>
+      </button>
+      <button class="m3-chip" onclick="openMenuEditor()">⚙️ Menu</button>
+      <button class="m3-chip" onclick="openCloudModal()">🔑 Cloud</button>
+      <input type="date" id="calendar-picker" onchange="switchDate(this.value)" style="border:1px solid var(--md-sys-color-outline-variant); background:transparent; border-radius:999px; padding:5px 10px; font-weight:700; color:var(--md-sys-color-on-surface);" />
     </div>
+  </header>
 
-    <!-- RIGHT: ORDER & DAILY STATS -->
-    <div>
-      <!-- CURRENT TICKET -->
-      <div class="glass-card">
-        <div class="card-header-clean">
-          <h2>Current Order</h2>
-          <button onclick="clearTicket()" style="background:none; border:none; color:var(--accent); font-size:0.75rem; font-weight:700; cursor:pointer;">Clear Ticket</button>
+  <main class="app-container">
+    <!-- LEFT: MENU -->
+    <section>
+      <div class="category-scroll-bar" id="cat-strip"></div>
+      <div class="dish-grid" id="dish-grid"></div>
+    </section>
+
+    <!-- RIGHT: ORDER DOCK & DAILY DASHBOARD -->
+    <section>
+      <!-- Active Ticket -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <h2>Active Ticket</h2>
+          <button onclick="clearTicket()" style="background:none; border:none; color:var(--md-sys-color-error); font-weight:700; font-size:0.8rem; cursor:pointer;">Reset</button>
         </div>
-        <div class="order-items" id="ticket-container">
-          <div style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size: 0.85rem;">🛒 Tap items on the menu to add</div>
+        <div class="ticket-list" id="ticket-items">
+          <p style="text-align:center; padding: 2rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">
+            🛒 Ticket is empty. Tap items to add.
+          </p>
         </div>
-        <div class="summary-bill">
+        <div class="order-total-bar">
           <div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Total Amount</div>
-            <div class="bill-total-val">৳ <span id="ticket-price">0</span></div>
+            <div class="order-total-text">Total Bill Due</div>
+            <div class="order-total-val">৳ <span id="bill-total-price">0</span></div>
           </div>
-          <span id="ticket-qty-tag" style="background:#f1f5f9; padding: 4px 10px; border-radius:999px; font-size: 0.75rem; font-weight:700;">0 items</span>
+          <span id="bill-item-count" style="background:var(--md-sys-color-surface-container); padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 Items</span>
         </div>
-        <button id="record-sale-btn" class="btn-checkout" onclick="confirmOrder()" disabled>Complete Order</button>
+        <button id="btn-record-sale" class="btn-m3-fill" onclick="recordSale()" disabled>Record Sale</button>
       </div>
 
-      <!-- DAILY PERFORMANCE -->
-      <div class="glass-card">
-        <div class="card-header-clean">
-          <h2>Daily Performance</h2>
-          <span style="font-size:0.75rem; background:var(--primary-light); color:var(--primary); padding:3px 8px; border-radius:999px; font-weight:700;" id="active-date-badge">Today</span>
-        </div>
-        <div class="metric-strip">
-          <div class="mini-stat">
-            <div class="stat-caption">Revenue</div>
-            <div class="stat-number" style="color:var(--success);">৳<span id="metric-revenue">0</span></div>
-          </div>
-          <div class="mini-stat">
-            <div class="stat-caption">Orders</div>
-            <div class="stat-number" id="metric-tickets">0</div>
-          </div>
-          <div class="mini-stat">
-            <div class="stat-caption">Items Sold</div>
-            <div class="stat-number" id="metric-quantity">0</div>
-          </div>
+      <!-- Daily Sales Summary -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <h2>Daily Sales Ledger</h2>
+          <span id="date-label-badge" style="background:var(--md-sys-color-primary-container); color:var(--md-sys-color-on-primary-container); padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">Today</span>
         </div>
 
-        <div class="subtabs">
-          <button class="subtab-btn active" id="tab-orders" onclick="switchReportTab('orders')">Order History</button>
-          <button class="subtab-btn" id="tab-breakdown" onclick="switchReportTab('breakdown')">Item Breakdown</button>
+        <div class="metric-row">
+          <div class="metric-box">
+            <div class="metric-box-label">Revenue</div>
+            <div class="metric-box-val" style="color:var(--md-sys-color-primary);">৳<span id="metric-revenue">0</span></div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-box-label">Tickets</div>
+            <div class="metric-box-val" id="metric-tickets">0</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-box-label">Units Sold</div>
+            <div class="metric-box-val" id="metric-quantity">0</div>
+          </div>
         </div>
 
-        <div class="scroll-table" id="report-view-content"></div>
+        <!-- Segmented Tab Controls -->
+        <div class="m3-segmented">
+          <button class="segmented-btn active" id="tab-orders" onclick="toggleReportTab('orders')">Order History</button>
+          <button class="segmented-btn" id="tab-breakdown" onclick="toggleReportTab('breakdown')">Item Breakdown</button>
+        </div>
 
-        <button class="btn-nav" style="width:100%; margin-top:0.85rem; padding:0.65rem;" onclick="exportDailyCSV()">📥 Download Today's Sales (CSV)</button>
+        <div style="max-height: 220px; overflow-y: auto;" id="report-content-view"></div>
+
+        <!-- Export & Clear Actions -->
+        <div style="display: flex; gap: 8px; margin-top: 1rem;">
+          <button class="m3-chip" style="flex:1; justify-content:center; padding:10px;" onclick="exportDailyCSV()">📥 Download CSV</button>
+          <button class="m3-chip" style="color:var(--md-sys-color-error); border-color:var(--md-sys-color-error-container); justify-content:center; padding:10px;" onclick="clearActiveDateLedger()">🗑️ Clear Day</button>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <!-- MODAL: ADD / REMOVE MENU ITEMS -->
-  <div class="modal-overlay" id="menu-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
-        <button onclick="closeMenuModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+  <!-- MODAL: ADD / DELETE MENU ITEMS -->
+  <div class="modal-scrim" id="menu-modal">
+    <div class="modal-surface">
+      <div class="modal-surface-header">
+        <h3 style="font-size:1.1rem; font-weight:700;">Edit Restaurant Menu</h3>
+        <button onclick="closeMenuEditor()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
-      <div class="modal-body">
-        <div style="background:#f8fafc; padding:0.85rem; border-radius:12px; margin-bottom:1rem; border:1px solid var(--border-dark);">
-          <div style="font-weight:700; font-size:0.82rem; margin-bottom:0.5rem;">+ Add New Menu Item</div>
-          <div class="form-group">
-            <label>Category Name</label>
-            <input class="form-control" id="new-item-cat" placeholder="e.g. Momo Corner, Drinks" list="cat-suggestions" />
-            <datalist id="cat-suggestions"></datalist>
-          </div>
-          <div class="form-group">
-            <label>Item Name</label>
-            <input class="form-control" id="new-item-name" placeholder="e.g. Cheese Momo" />
-          </div>
-          <div class="form-group">
-            <label>Price (৳)</label>
-            <input type="number" class="form-control" id="new-item-price" placeholder="e.g. 180" />
-          </div>
-          <button class="btn-action-full" onclick="saveNewItem()">Add to Menu</button>
+      <div class="modal-surface-body">
+        <div style="background:var(--md-sys-color-surface-container-lowest); padding:1rem; border-radius:16px; border:1px solid var(--md-sys-color-outline-variant); margin-bottom:1rem;">
+          <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px;">+ Add New Menu Item</div>
+          <input class="m3-input-field" id="new-dish-category" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-hints" />
+          <datalist id="cat-hints"></datalist>
+          <input class="m3-input-field" id="new-dish-name" placeholder="Item Name (e.g. Cheese Momo)" />
+          <input type="number" class="m3-input-field" id="new-dish-price" placeholder="Price (৳)" />
+          <button class="btn-m3-fill" style="margin-top:0;" onclick="submitNewDish()">Save Item</button>
         </div>
 
-        <div style="font-weight:700; font-size:0.82rem; margin-bottom:0.5rem;">Current Menu Items (Tap Delete to Remove)</div>
-        <div id="existing-items-list"></div>
+        <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px;">Current Menu (Tap ✕ to remove)</div>
+        <div id="editable-menu-list"></div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: FREE SUPABASE CLOUD SETUP -->
-  <div class="modal-overlay" id="cloud-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size:1rem; font-weight:800;">Free Multi-Device Cloud Sync</h3>
-        <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+  <!-- MODAL: SUPABASE CREDENTIALS -->
+  <div class="modal-scrim" id="cloud-modal">
+    <div class="modal-surface">
+      <div class="modal-surface-header">
+        <h3 style="font-size:1.1rem; font-weight:700;">Cloud Database Settings</h3>
+        <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
-      <div class="modal-body">
-        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4; margin-bottom:1rem;">
-          To view sales simultaneously across phone and PC, connect a free database at <b>supabase.com</b>:
+      <div class="modal-surface-body">
+        <p style="font-size:0.8rem; color:var(--md-sys-color-on-surface-variant); margin-bottom:1rem; line-height:1.4;">
+          Syncs all devices automatically using your free Supabase setup.
         </p>
-        <div class="form-group">
-          <label>Supabase Project URL</label>
-          <input class="form-control" id="sb-url" placeholder="https://xyz.supabase.co" />
-        </div>
-        <div class="form-group">
-          <label>Supabase Anon Key</label>
-          <input class="form-control" id="sb-key" placeholder="eyJhbGciOi..." />
-        </div>
-        <button class="btn-action-full" onclick="saveCloudConfig()">Save & Connect Cloud</button>
+        <label style="font-size:0.75rem; font-weight:700; color:var(--md-sys-color-on-surface-variant);">Project URL</label>
+        <input class="m3-input-field" id="sb-url-input" placeholder="https://xyz.supabase.co" />
+        <label style="font-size:0.75rem; font-weight:700; color:var(--md-sys-color-on-surface-variant);">Publishable / Anon Key</label>
+        <input class="m3-input-field" id="sb-key-input" placeholder="sb_publishable_... or eyJ..." />
+        <button class="btn-m3-fill" onclick="persistCloudSettings()">Save & Reconnect</button>
       </div>
     </div>
   </div>
 
   <script>
-    // DEFAULT MENU ITEMS
-    const DEFAULT_MENU = {
+    // DEFAULT RESTAURANT MENU
+    const BASE_MENU = {
       "🥟 Momo Corner": [
         { name: "Steamed Momo", price: 120 },
         { name: "Kothey Momo", price: 140 },
@@ -502,353 +572,483 @@
       ]
     };
 
-    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom')) || DEFAULT_MENU;
-    let activeCategory = Object.keys(menu)[0] || "";
-    let liveCart = {};
-    let activeSubTab = 'orders';
+    let menu = JSON.parse(localStorage.getItem('aashi_menu_v2')) || BASE_MENU;
+    let selectedCategory = Object.keys(menu)[0] || "";
+    let activeTicket = {};
+    let activeReportTab = 'orders';
 
-    function getToday() {
+    function getTodayString() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-    let activeDate = getToday();
+    let viewingDate = getTodayString();
 
-    // Supabase Client Handle
-    let supabaseClient = null;
-    const savedUrl = localStorage.getItem('aashi_sb_url');
-    const savedKey = localStorage.getItem('aashi_sb_key');
-    if (savedUrl && savedKey && window.supabase) {
-      supabaseClient = window.supabase.createClient(savedUrl, savedKey);
+    // Supabase Initialization
+    let supabase = null;
+    const sbUrl = localStorage.getItem('aashi_sb_url');
+    const sbKey = localStorage.getItem('aashi_sb_key');
+    if (sbUrl && sbKey && window.supabase) {
+      supabase = window.supabase.createClient(sbUrl, sbKey);
     }
 
-    function init() {
-      document.getElementById('date-picker').value = activeDate;
-      renderCategories();
-      renderDishes();
-      updateDashboard();
-      syncFromCloud();
+    function initApp() {
+      document.getElementById('calendar-picker').value = viewingDate;
+      renderCategoryStrip();
+      renderDishGrid();
+      refreshDashboard();
+      updateSyncUI();
+
+      window.addEventListener('online', () => syncAllData());
+      if (navigator.onLine && supabase) syncAllData();
     }
 
-    // Category & Dish Rendering
-    function renderCategories() {
-      const bar = document.getElementById('category-bar');
+    // UI RENDERERS
+    function renderCategoryStrip() {
+      const strip = document.getElementById('cat-strip');
       const cats = Object.keys(menu);
-      if (!cats.includes(activeCategory)) activeCategory = cats[0] || "";
-      bar.innerHTML = cats.map(c => `
-        <button class="cat-pill ${c === activeCategory ? 'active' : ''}" onclick="selectCat('${c}')">${c}</button>
+      if (!cats.includes(selectedCategory)) selectedCategory = cats[0] || "";
+      strip.innerHTML = cats.map(cat => `
+        <button class="category-pill ${cat === selectedCategory ? 'active' : ''}" onclick="pickCategory('${cat}')">${cat}</button>
       `).join('');
 
-      // populate datalist for add item modal
-      const datalist = document.getElementById('cat-suggestions');
-      datalist.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+      document.getElementById('cat-hints').innerHTML = cats.map(c => `<option value="${c}">`).join('');
     }
 
-    function selectCat(cat) {
-      activeCategory = cat;
-      renderCategories();
-      renderDishes();
+    function pickCategory(c) {
+      selectedCategory = c;
+      renderCategoryStrip();
+      renderDishGrid();
     }
 
-    function renderDishes() {
-      const list = document.getElementById('dish-list');
-      const items = menu[activeCategory] || [];
+    function renderDishGrid() {
+      const grid = document.getElementById('dish-grid');
+      const items = menu[selectedCategory] || [];
       if (items.length === 0) {
-        list.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No items in this category. Add some using "Edit Menu".</p>`;
+        grid.innerHTML = `<p style="color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">No items in this category.</p>`;
         return;
       }
-      list.innerHTML = items.map(d => `
-        <div class="dish-card" onclick="addToCart('${d.name.replace(/'/g, "\\'")}', ${d.price})">
-          <div class="dish-name">${d.name}</div>
-          <div class="dish-footer">
-            <span class="dish-price">৳${d.price}</span>
-            <div class="add-indicator">+</div>
+      grid.innerHTML = items.map(dish => `
+        <div class="dish-card" onclick="addToOrder('${dish.name.replace(/'/g, "\\'")}', ${dish.price})">
+          <div class="dish-title">${dish.name}</div>
+          <div class="dish-card-bottom">
+            <span class="dish-price">৳${dish.price}</span>
+            <div class="dish-add-btn">+</div>
           </div>
         </div>
       `).join('');
     }
 
-    // Cart / Ticket Actions
-    function addToCart(name, price) {
-      if (!liveCart[name]) liveCart[name] = { price, qty: 0 };
-      liveCart[name].qty += 1;
-      renderTicket();
+    // ORDER TICKET ACTIONS
+    function addToOrder(name, price) {
+      if (!activeTicket[name]) activeTicket[name] = { price, qty: 0 };
+      activeTicket[name].qty += 1;
+      renderActiveTicket();
     }
 
-    function changeQty(name, delta) {
-      if (!liveCart[name]) return;
-      liveCart[name].qty += delta;
-      if (liveCart[name].qty <= 0) delete liveCart[name];
-      renderTicket();
+    function stepQty(name, delta) {
+      if (!activeTicket[name]) return;
+      activeTicket[name].qty += delta;
+      if (activeTicket[name].qty <= 0) delete activeTicket[name];
+      renderActiveTicket();
     }
 
     function clearTicket() {
-      liveCart = {};
-      renderTicket();
+      activeTicket = {};
+      renderActiveTicket();
     }
 
-    function renderTicket() {
-      const box = document.getElementById('ticket-container');
-      const totalEl = document.getElementById('ticket-price');
-      const qtyEl = document.getElementById('ticket-qty-tag');
-      const btn = document.getElementById('record-sale-btn');
-      const items = Object.keys(liveCart);
+    function renderActiveTicket() {
+      const container = document.getElementById('ticket-items');
+      const totalDisplay = document.getElementById('bill-total-price');
+      const countDisplay = document.getElementById('bill-item-count');
+      const submitBtn = document.getElementById('btn-record-sale');
+      const keys = Object.keys(activeTicket);
 
-      if (items.length === 0) {
-        box.innerHTML = `<div style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size: 0.85rem;">🛒 Tap items on the menu to add</div>`;
-        totalEl.innerText = "0";
-        qtyEl.innerText = "0 items";
-        btn.disabled = true;
+      if (keys.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.85rem;">🛒 Ticket is empty. Tap items to add.</p>`;
+        totalDisplay.innerText = "0";
+        countDisplay.innerText = "0 Items";
+        submitBtn.disabled = true;
         return;
       }
 
-      let subtotal = 0, totalQty = 0;
-      box.innerHTML = items.map(name => {
-        const item = liveCart[name];
-        const lineTot = item.price * item.qty;
-        subtotal += lineTot;
-        totalQty += item.qty;
+      let subtotal = 0, itemCount = 0;
+      container.innerHTML = keys.map(name => {
+        const item = activeTicket[name];
+        const lineTotal = item.price * item.qty;
+        subtotal += lineTotal;
+        itemCount += item.qty;
         return `
-          <div class="order-line">
+          <div class="ticket-row">
             <div>
-              <div class="order-line-name">${name}</div>
-              <div class="order-line-meta">৳${item.price} × ${item.qty} = ৳${lineTot}</div>
+              <div class="ticket-row-title">${name}</div>
+              <div class="ticket-row-sub">৳${item.price} × ${item.qty} = ৳${lineTotal}</div>
             </div>
-            <div class="counter-wrap">
-              <button class="count-btn" onclick="changeQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
-              <div style="font-size:0.8rem; font-weight:800; width:16px; text-align:center;">${item.qty}</div>
-              <button class="count-btn" onclick="changeQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
+              <div class="qty-num">${item.qty}</div>
+              <button class="qty-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
             </div>
           </div>
         `;
       }).join('');
 
-      totalEl.innerText = subtotal;
-      qtyEl.innerText = `${totalQty} items`;
-      btn.disabled = false;
+      totalDisplay.innerText = subtotal;
+      countDisplay.innerText = `${itemCount} Items`;
+      submitBtn.disabled = false;
     }
 
-    // Checkout & Persistent Storage
-    async function confirmOrder() {
-      const items = Object.keys(liveCart).map(name => ({
+    // CHECKOUT ORDER
+    async function recordSale() {
+      const items = Object.keys(activeTicket).map(name => ({
         name: name,
-        price: liveCart[name].price,
-        qty: liveCart[name].qty,
-        total: liveCart[name].price * liveCart[name].qty
+        price: activeTicket[name].price,
+        qty: activeTicket[name].qty,
+        total: activeTicket[name].price * activeTicket[name].qty
       }));
 
-      const orderTotal = items.reduce((s, x) => s + x.total, 0);
-      const totalQty = items.reduce((s, x) => s + x.qty, 0);
-      const today = getToday();
+      const grandTotal = items.reduce((s, it) => s + it.total, 0);
+      const totalQuantity = items.reduce((s, it) => s + it.qty, 0);
+      const today = getTodayString();
 
       const order = {
-        id: "ORD-" + Date.now().toString().slice(-4),
+        id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random()*10),
         date: today,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         items: items,
-        totalQty: totalQty,
-        orderTotal: orderTotal
+        totalQty: totalQuantity,
+        orderTotal: grandTotal,
+        synced: false
       };
 
-      // Local storage save
-      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
+      // 1. Save Locally
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
       if (!ledger[today]) ledger[today] = [];
       ledger[today].unshift(order);
-      localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
+      localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
 
-      // Supabase Cloud Sync (if connected)
-      if (supabaseClient) {
+      // Reset Ticket
+      clearTicket();
+      viewingDate = today;
+      document.getElementById('calendar-picker').value = today;
+      refreshDashboard();
+      updateSyncUI();
+
+      // 2. Upload to Cloud if connected
+      if (supabase && navigator.onLine) {
+        await pushPendingOrders();
+      }
+    }
+
+    // DELETION LOGIC (Single order & whole day)
+    async function deleteSingleOrder(orderId) {
+      if (!confirm(`Delete order ${orderId}? This cannot be undone.`)) return;
+
+      // 1. Delete from local storage
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      if (ledger[viewingDate]) {
+        ledger[viewingDate] = ledger[viewingDate].filter(o => o.id !== orderId);
+        if (ledger[viewingDate].length === 0) delete ledger[viewingDate];
+        localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+      }
+
+      // 2. Delete from Supabase
+      if (supabase && navigator.onLine) {
         try {
-          await supabaseClient.from('orders').insert([order]);
+          await supabase.from('orders').delete().eq('id', orderId);
         } catch (e) {
-          console.warn("Cloud sync failed, stored locally", e);
+          console.error("Cloud deletion failed:", e);
         }
       }
 
-      activeDate = today;
-      document.getElementById('date-picker').value = today;
-      document.getElementById('active-date-badge').innerText = "Today";
-
-      clearTicket();
-      updateDashboard();
+      refreshDashboard();
+      updateSyncUI();
     }
 
-    // Dashboard & Reports
-    function switchReportTab(t) {
-      activeSubTab = t;
-      document.getElementById('tab-orders').className = `subtab-btn ${t === 'orders' ? 'active' : ''}`;
-      document.getElementById('tab-breakdown').className = `subtab-btn ${t === 'breakdown' ? 'active' : ''}`;
-      updateDashboard();
+    async function clearActiveDateLedger() {
+      if (!confirm(`Are you sure you want to delete ALL entries for ${viewingDate}?`)) return;
+
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      delete ledger[viewingDate];
+      localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+
+      if (supabase && navigator.onLine) {
+        try {
+          await supabase.from('orders').delete().eq('date', viewingDate);
+        } catch (e) {
+          console.error("Cloud day wipe failed:", e);
+        }
+      }
+
+      refreshDashboard();
+      updateSyncUI();
     }
 
-    function changeActiveDate(d) {
+    // DASHBOARD & BREAKDOWN
+    function toggleReportTab(tab) {
+      activeReportTab = tab;
+      document.getElementById('tab-orders').className = `segmented-btn ${tab === 'orders' ? 'active' : ''}`;
+      document.getElementById('tab-breakdown').className = `segmented-btn ${tab === 'breakdown' ? 'active' : ''}`;
+      refreshDashboard();
+    }
+
+    function switchDate(d) {
       if (!d) return;
-      activeDate = d;
-      document.getElementById('active-date-badge').innerText = (activeDate === getToday()) ? "Today" : activeDate;
-      updateDashboard();
+      viewingDate = d;
+      document.getElementById('date-label-badge').innerText = (viewingDate === getTodayString()) ? "Today" : viewingDate;
+      refreshDashboard();
     }
 
-    function updateDashboard() {
-      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
-      const orders = ledger[activeDate] || [];
+    function refreshDashboard() {
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      const orders = ledger[viewingDate] || [];
 
-      let rev = 0, qty = 0;
+      let rev = 0, totalUnits = 0;
       const breakdown = {};
 
-      orders.forEach(o => {
-        rev += o.orderTotal;
-        qty += o.totalQty;
-        o.items.forEach(i => {
-          if (!breakdown[i.name]) breakdown[i.name] = { qty: 0, revenue: 0 };
-          breakdown[i.name].qty += i.qty;
-          breakdown[i.name].revenue += i.total;
+      orders.forEach(ord => {
+        rev += parseFloat(ord.orderTotal);
+        totalUnits += parseInt(ord.totalQty);
+        ord.items.forEach(it => {
+          if (!breakdown[it.name]) breakdown[it.name] = { qty: 0, revenue: 0 };
+          breakdown[it.name].qty += it.qty;
+          breakdown[it.name].revenue += it.total;
         });
       });
 
       document.getElementById('metric-revenue').innerText = rev;
       document.getElementById('metric-tickets').innerText = orders.length;
-      document.getElementById('metric-quantity').innerText = qty;
+      document.getElementById('metric-quantity').innerText = totalUnits;
 
-      const view = document.getElementById('report-view-content');
+      const view = document.getElementById('report-content-view');
       if (orders.length === 0) {
-        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--text-muted); font-size:0.8rem;">No sales registered for this date.</p>`;
+        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--md-sys-color-on-surface-variant); font-size:0.8rem;">No sales recorded for this date.</p>`;
         return;
       }
 
-      if (activeSubTab === 'orders') {
-        view.innerHTML = orders.map(o => `
-          <div class="row-record">
+      if (activeReportTab === 'orders') {
+        view.innerHTML = orders.map(ord => `
+          <div class="history-item">
             <div>
-              <strong>${o.id}</strong> <span style="color:var(--text-muted); font-size:0.75rem;">${o.time}</span><br>
-              <span style="font-size:0.75rem; color:#475569;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
+              <strong>${ord.id}</strong> <span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${ord.time}</span>
+              ${ord.synced === false ? '<span style="color:var(--md-sys-color-error); font-size:0.7rem; font-weight:800; margin-left:4px;">(Offline)</span>' : ''}
+              <br/>
+              <span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${ord.items.map(i => `${i.qty}x ${i.name}`).join(', ')}</span>
             </div>
-            <strong>৳${o.orderTotal}</strong>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong style="color:var(--md-sys-color-primary);">৳${ord.orderTotal}</strong>
+              <button class="delete-action-btn" title="Delete entry" onclick="deleteSingleOrder('${ord.id}')">✕</button>
+            </div>
           </div>
         `).join('');
       } else {
         const sorted = Object.keys(breakdown).sort((a,b) => breakdown[b].qty - breakdown[a].qty);
-        view.innerHTML = sorted.map(name => `
-          <div class="row-record">
-            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${breakdown[name].qty} sold</span></div>
-            <strong style="color:var(--primary);">৳${breakdown[name].revenue}</strong>
+        view.innerHTML = sorted.map(dish => `
+          <div class="history-item">
+            <div><strong>${dish}</strong><br><span style="font-size:0.75rem; color:var(--md-sys-color-on-surface-variant);">${breakdown[dish].qty} sold</span></div>
+            <strong style="color:var(--md-sys-color-primary);">৳${breakdown[dish].revenue}</strong>
           </div>
         `).join('');
       }
     }
 
-    // MENU MANAGER (Add / Delete Items)
-    function openMenuModal() {
-      renderManageList();
-      document.getElementById('menu-modal').style.display = 'flex';
-    }
-    function closeMenuModal() {
-      document.getElementById('menu-modal').style.display = 'none';
+    // SUPABASE SYNC LOGIC
+    function getPendingUnsynced() {
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      const pending = [];
+      Object.keys(ledger).forEach(dt => {
+        ledger[dt].forEach(o => {
+          if (!o.synced) pending.push(o);
+        });
+      });
+      return pending;
     }
 
-    function renderManageList() {
-      const wrap = document.getElementById('existing-items-list');
+    async function pushPendingOrders() {
+      if (!supabase || !navigator.onLine) return;
+      const pending = getPendingUnsynced();
+      if (pending.length === 0) return;
+
+      try {
+        const payloads = pending.map(o => ({
+          id: o.id,
+          date: o.date,
+          time: o.time,
+          items: o.items,
+          totalQty: o.totalQty,
+          orderTotal: o.orderTotal
+        }));
+
+        const { error } = await supabase.from('orders').upsert(payloads);
+        if (!error) {
+          const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+          Object.keys(ledger).forEach(dt => {
+            ledger[dt].forEach(o => { o.synced = true; });
+          });
+          localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+        }
+      } catch (err) {
+        console.warn("Sync deferral:", err);
+      }
+      refreshDashboard();
+      updateSyncUI();
+    }
+
+    async function pullCloudOrders() {
+      if (!supabase || !navigator.onLine) return;
+      try {
+        const { data, error } = await supabase.from('orders').select('*');
+        if (!error && data) {
+          const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+          data.forEach(co => {
+            if (!ledger[co.date]) ledger[co.date] = [];
+            const exists = ledger[co.date].some(lo => lo.id === co.id);
+            if (!exists) ledger[co.date].unshift({ ...co, synced: true });
+          });
+          localStorage.setItem('aashi_ledger_m3', JSON.stringify(ledger));
+          refreshDashboard();
+        }
+      } catch (err) {
+        console.warn("Pull error:", err);
+      }
+    }
+
+    async function syncAllData() {
+      await pushPendingOrders();
+      await pullCloudOrders();
+      updateSyncUI();
+    }
+
+    async function manualSync() {
+      if (!supabase) {
+        openCloudModal();
+        return;
+      }
+      document.getElementById('sync-text').innerText = "Syncing...";
+      await syncAllData();
+    }
+
+    function updateSyncUI() {
+      const pill = document.getElementById('sync-pill');
+      const txt = document.getElementById('sync-text');
+      const ico = document.getElementById('sync-icon');
+      const pending = getPendingUnsynced().length;
+
+      if (!supabase) {
+        ico.innerText = "⚙️";
+        txt.innerText = "No Cloud";
+        pill.className = "m3-chip";
+        return;
+      }
+
+      if (!navigator.onLine) {
+        ico.innerText = "⚠️";
+        txt.innerText = `Offline (${pending})`;
+        pill.className = "m3-chip offline-warning";
+        return;
+      }
+
+      if (pending > 0) {
+        ico.innerText = "🔄";
+        txt.innerText = `Sync (${pending})`;
+        pill.className = "m3-chip offline-warning";
+      } else {
+        ico.innerText = "☁️";
+        txt.innerText = "Connected";
+        pill.className = "m3-chip active-sync";
+      }
+    }
+
+    // MENU EDITOR
+    function openMenuEditor() {
+      renderEditableList();
+      document.getElementById('menu-modal').style.display = 'flex';
+    }
+    function closeMenuEditor() { document.getElementById('menu-modal').style.display = 'none'; }
+
+    function renderEditableList() {
+      const container = document.getElementById('editable-menu-list');
       let html = '';
       Object.keys(menu).forEach(cat => {
-        html += `<div style="font-size:0.78rem; font-weight:800; color:var(--primary); margin:8px 0 4px 0;">${cat}</div>`;
+        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--md-sys-color-primary); margin:10px 0 4px 0;">${cat}</div>`;
         menu[cat].forEach((it, idx) => {
           html += `
-            <div class="menu-manager-row">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--md-sys-color-surface-container); font-size:0.82rem;">
               <span>${it.name} (৳${it.price})</span>
-              <button class="btn-delete" onclick="removeItem('${cat}', ${idx})">Delete</button>
+              <button class="delete-action-btn" style="width:22px; height:22px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
             </div>
           `;
         });
       });
-      wrap.innerHTML = html;
+      container.innerHTML = html;
     }
 
-    function saveNewItem() {
-      const cat = document.getElementById('new-item-cat').value.trim();
-      const name = document.getElementById('new-item-name').value.trim();
-      const price = parseFloat(document.getElementById('new-item-price').value);
+    function submitNewDish() {
+      const cat = document.getElementById('new-dish-category').value.trim();
+      const name = document.getElementById('new-dish-name').value.trim();
+      const price = parseFloat(document.getElementById('new-dish-price').value);
 
-      if (!cat || !name || isNaN(price)) {
-        alert("Please enter a category, item name, and valid price!");
-        return;
-      }
+      if (!cat || !name || isNaN(price)) return alert("Please fill in category, dish name, and valid price.");
 
       if (!menu[cat]) menu[cat] = [];
       menu[cat].push({ name, price });
+      localStorage.setItem('aashi_menu_v2', JSON.stringify(menu));
 
-      localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
-      document.getElementById('new-item-name').value = '';
-      document.getElementById('new-item-price').value = '';
+      document.getElementById('new-dish-name').value = '';
+      document.getElementById('new-dish-price').value = '';
 
-      renderManageList();
-      renderCategories();
-      renderDishes();
+      renderEditableList();
+      renderCategoryStrip();
+      renderDishGrid();
     }
 
-    function removeItem(cat, idx) {
-      if (confirm(`Remove this item from ${cat}?`)) {
-        menu[cat].splice(idx, 1);
-        if (menu[cat].length === 0) delete menu[cat];
-        localStorage.setItem('aashi_menu_custom', JSON.stringify(menu));
-        renderManageList();
-        renderCategories();
-        renderDishes();
-      }
+    function deleteMenuItem(cat, idx) {
+      if (!confirm(`Delete this item?`)) return;
+      menu[cat].splice(idx, 1);
+      if (menu[cat].length === 0) delete menu[cat];
+      localStorage.setItem('aashi_menu_v2', JSON.stringify(menu));
+      renderEditableList();
+      renderCategoryStrip();
+      renderDishGrid();
     }
 
-    // CLOUD SYNC LOGIC
+    // CLOUD MODAL
     function openCloudModal() {
-      document.getElementById('sb-url').value = localStorage.getItem('aashi_sb_url') || '';
-      document.getElementById('sb-key').value = localStorage.getItem('aashi_sb_key') || '';
+      document.getElementById('sb-url-input').value = localStorage.getItem('aashi_sb_url') || '';
+      document.getElementById('sb-key-input').value = localStorage.getItem('aashi_sb_key') || '';
       document.getElementById('cloud-modal').style.display = 'flex';
     }
     function closeCloudModal() { document.getElementById('cloud-modal').style.display = 'none'; }
 
-    function saveCloudConfig() {
-      const url = document.getElementById('sb-url').value.trim();
-      const key = document.getElementById('sb-key').value.trim();
+    function persistCloudSettings() {
+      const url = document.getElementById('sb-url-input').value.trim();
+      const key = document.getElementById('sb-key-input').value.trim();
       localStorage.setItem('aashi_sb_url', url);
       localStorage.setItem('aashi_sb_key', key);
       closeCloudModal();
       location.reload();
     }
 
-    async function syncFromCloud() {
-      if (!supabaseClient) return;
-      try {
-        const { data, error } = await supabaseClient.from('orders').select('*');
-        if (!error && data) {
-          const ledger = {};
-          data.forEach(o => {
-            if (!ledger[o.date]) ledger[o.date] = [];
-            ledger[o.date].push(o);
-          });
-          localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
-          updateDashboard();
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // CSV Download
+    // CSV DOWNLOAD
     function exportDailyCSV() {
-      const ledger = JSON.parse(localStorage.getItem('aashi_master_sales_v1') || "{}");
-      const orders = ledger[activeDate] || [];
-      if (orders.length === 0) return alert("No records for " + activeDate);
+      const ledger = JSON.parse(localStorage.getItem('aashi_ledger_m3') || "{}");
+      const orders = ledger[viewingDate] || [];
+      if (orders.length === 0) return alert("No sales for " + viewingDate);
 
       let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
       orders.forEach(o => {
         o.items.forEach(i => {
-          csv += `"${activeDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
+          csv += `"${viewingDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
         });
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `Aashi_Sales_${activeDate}.csv`;
+      a.download = `Aashi_Sales_${viewingDate}.csv`;
       a.click();
     }
 
-    window.onload = init;
+    window.onload = initApp;
   </script>
 </body>
 </html>
