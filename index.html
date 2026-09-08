@@ -9,246 +9,209 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Safe Cloud Client Loader -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --md-primary: #b83214;
-      --md-primary-container: #ffdad2;
-      --md-on-primary-container: #3d0700;
-      --md-surface: #faf5f0;
-      --md-surface-card: #ffffff;
-      --md-surface-variant: #f2ebe3;
-      --md-border: #ebdcd4;
-      --md-text: #201a18;
-      --md-text-muted: #796c68;
-      --md-success: #15803d;
-      --md-success-bg: #dcfce7;
-      --md-error: #dc2626;
-      --md-error-bg: #fee2e2;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(32,26,24,0.06);
-      --shadow-lg: 0 12px 30px rgba(32,26,24,0.1);
+      --primary: #c2410c;
+      --primary-dark: #9a3412;
+      --primary-container: #ffedd5;
+      --surface: #faf8f5;
+      --card: #ffffff;
+      --border: #eedfd5;
+      --text: #1c1917;
+      --text-muted: #78716c;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--md-surface); color: var(--md-text); min-height: 100vh; overflow-x: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--surface); color: var(--text); padding-bottom: 75px; }
 
-    /* Top Navigation */
-    .app-bar {
-      background: var(--md-surface-card);
-      border-bottom: 1px solid var(--md-border);
-      padding: 0.85rem 1.5rem;
+    /* Top Bar */
+    .top-bar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 1.25rem;
       position: sticky;
       top: 0;
-      z-index: 50;
-      box-shadow: var(--shadow-sm);
+      z-index: 40;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
-    .app-bar-inner {
-      max-width: 1400px;
+    .top-bar-inner {
+      max-width: 1300px;
       margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .brand-group {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .brand-logo {
-      background: linear-gradient(135deg, var(--md-primary), #e65100);
+      background: var(--primary);
       color: white;
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
-      box-shadow: 0 3px 8px rgba(184, 50, 20, 0.25);
+      font-size: 1.25rem;
     }
-    .brand-title {
-      font-size: 1.15rem;
+    .brand-name {
+      font-size: 1.1rem;
       font-weight: 800;
       letter-spacing: -0.3px;
-      color: var(--md-text);
-      line-height: 1.2;
     }
-    .brand-subtitle {
-      font-size: 0.72rem;
+    .brand-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
       font-weight: 600;
-      color: var(--md-text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    /* Action Badges / Buttons */
-    .m3-btn-tonal {
-      background: var(--md-surface-variant);
-      color: var(--md-text);
-      border: 1px solid var(--md-border);
+    .chip-btn {
+      background: #f4ede6;
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 9999px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       font-size: 0.8rem;
       font-weight: 700;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 5px;
+      transition: all 0.15s;
     }
-    .m3-btn-tonal:hover { background: #e8ded4; }
-    .m3-btn-tonal:active { transform: scale(0.96); }
-    .m3-btn-tonal.synced { background: var(--md-success-bg); color: var(--md-success); border-color: #bbf7d0; }
-    .m3-btn-tonal.pending { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+    .chip-btn:active { transform: scale(0.96); }
+    .chip-btn.online { background: var(--success-bg); color: var(--success); border-color: #bbf7d0; }
+    .chip-btn.pending { background: #fef08a; color: #854d0e; border-color: #fde047; }
 
-    /* Main Responsive Container */
-    .workspace {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.25rem 5rem 1.25rem;
+    /* Layout */
+    .app-shell {
+      max-width: 1300px;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
-    @media (min-width: 1024px) {
-      .workspace {
-        grid-template-columns: 1.4fr 0.85fr;
+    @media (min-width: 980px) {
+      .app-shell {
+        grid-template-columns: 1.35fr 0.85fr;
         padding-bottom: 2rem;
       }
     }
 
-    /* Category Pill Selector */
-    .category-container {
+    /* Categories Strip */
+    .cat-strip {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 10px;
-      margin-bottom: 1rem;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
       scrollbar-width: none;
     }
-    .category-container::-webkit-scrollbar { display: none; }
+    .cat-strip::-webkit-scrollbar { display: none; }
     .cat-pill {
-      background: var(--md-surface-card);
-      border: 1px solid var(--md-border);
-      color: var(--md-text-muted);
-      padding: 8px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
       border-radius: 9999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.15s;
     }
     .cat-pill.active {
-      background: var(--md-primary);
+      background: var(--primary);
       color: white;
       border-color: transparent;
-      box-shadow: 0 4px 12px rgba(184, 50, 20, 0.3);
-      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(194, 65, 12, 0.25);
     }
 
-    /* Menu Cards Grid */
-    .menu-grid {
+    /* Dish Grid */
+    .dish-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 10px;
     }
-    @media (min-width: 640px) {
-      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    @media (min-width: 600px) {
+      .dish-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
     }
     .dish-card {
-      background: var(--md-surface-card);
-      border: 1px solid var(--md-border);
-      border-radius: 20px;
-      padding: 1.1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 115px;
+      min-height: 110px;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      transition: transform 0.15s, border-color 0.15s;
     }
-    .dish-card:hover {
-      border-color: var(--md-primary);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
+    .dish-card:hover { border-color: var(--primary); transform: translateY(-2px); }
     .dish-card:active { transform: scale(0.97); }
-    .dish-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--md-text);
-      line-height: 1.3;
-    }
-    .dish-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-    }
-    .dish-price {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--md-primary);
-    }
-    .dish-add-circle {
-      width: 30px;
-      height: 30px;
+    .dish-name { font-size: 0.88rem; font-weight: 700; line-height: 1.3; }
+    .dish-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    .dish-price { font-size: 1rem; font-weight: 800; color: var(--primary); }
+    .dish-plus {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      background: var(--md-primary-container);
-      color: var(--md-primary);
+      background: var(--primary-container);
+      color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
       font-weight: 800;
     }
 
-    /* Elevation Panels */
-    .surface-panel {
-      background: var(--md-surface-card);
-      border: 1px solid var(--md-border);
-      border-radius: 24px;
-      padding: 1.4rem;
-      box-shadow: var(--shadow-sm);
+    /* Panels */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.25rem;
       margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
-    .panel-heading {
+    .panel-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.1rem;
+      margin-bottom: 1rem;
     }
-    .panel-heading h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
+    .panel-head h2 { font-size: 1.05rem; font-weight: 800; }
 
-    /* Cart Items */
-    .ticket-scroller { max-height: 270px; overflow-y: auto; padding-right: 4px; }
+    /* Cart */
+    .ticket-list { max-height: 250px; overflow-y: auto; }
     .ticket-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #f8f4ef;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #faf5f0;
     }
-    .ticket-name { font-size: 0.9rem; font-weight: 700; }
-    .ticket-sub { font-size: 0.76rem; color: var(--md-text-muted); margin-top: 2px; }
-    
     .stepper {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: var(--md-surface-variant);
+      background: #faf2eb;
       border-radius: 9999px;
       padding: 3px;
     }
@@ -258,105 +221,99 @@
       border-radius: 50%;
       border: none;
       background: white;
-      color: var(--md-text);
+      color: var(--text);
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-sm);
     }
-    .stepper-num { font-size: 0.85rem; font-weight: 800; width: 18px; text-align: center; }
+    .stepper-val { font-size: 0.82rem; font-weight: 800; width: 18px; text-align: center; }
 
-    .bill-checkout-bar {
+    .bill-bar {
       margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 2px dashed var(--md-border);
+      padding-top: 0.75rem;
+      border-top: 2px dashed var(--border);
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
     }
-    .bill-amount-due { font-size: 1.65rem; font-weight: 900; color: var(--md-primary); line-height: 1; }
+    .bill-val { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
 
-    .btn-fill-primary {
+    .btn-main {
       width: 100%;
-      margin-top: 1rem;
-      padding: 0.95rem;
-      border-radius: 16px;
+      margin-top: 0.85rem;
+      padding: 0.9rem;
+      border-radius: 14px;
       border: none;
-      background: var(--md-primary);
+      background: var(--primary);
       color: white;
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(184, 50, 20, 0.3);
-      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(194, 65, 12, 0.25);
     }
-    .btn-fill-primary:disabled {
-      background: #e2d9d4;
-      color: #9c8e89;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
+    .btn-main:disabled { background: #e7ded9; color: #a89f99; box-shadow: none; cursor: not-allowed; }
 
-    /* Metric Grid */
-    .metric-grid {
+    /* Metrics */
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 1.1rem;
-    }
-    .metric-card {
-      background: var(--md-surface);
-      border: 1px solid var(--md-border);
-      border-radius: 16px;
-      padding: 0.85rem 0.5rem;
-      text-align: center;
-    }
-    .metric-label { font-size: 0.7rem; font-weight: 700; color: var(--md-text-muted); text-transform: uppercase; }
-    .metric-val { font-size: 1.25rem; font-weight: 900; margin-top: 3px; color: var(--md-text); }
-
-    /* Segmented Tab Controls */
-    .segmented-tabs {
-      display: flex;
-      background: var(--md-surface-variant);
-      border-radius: 9999px;
-      padding: 3px;
+      gap: 8px;
       margin-bottom: 1rem;
     }
-    .segment-tab {
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem 0.4rem;
+      text-align: center;
+    }
+    .stat-box-lbl { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .stat-box-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+
+    /* Segmented Tabs */
+    .tab-bar {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 3px;
+      margin-bottom: 0.85rem;
+    }
+    .tab-btn {
       flex: 1;
-      padding: 7px;
+      padding: 6px;
       border-radius: 9999px;
       border: none;
       background: transparent;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: var(--md-text-muted);
+      color: var(--text-muted);
       cursor: pointer;
     }
-    .segment-tab.active {
+    .tab-btn.active {
       background: white;
-      color: var(--md-primary);
-      box-shadow: var(--shadow-sm);
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    /* History and Breakdown list */
-    .record-row {
+    /* History & Delete List */
+    .row-record {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #f8f4ef;
-      font-size: 0.85rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #fbf7f4;
+      font-size: 0.82rem;
     }
-    .btn-del-circle {
-      width: 28px;
-      height: 28px;
+    .btn-trash {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       border: none;
-      background: var(--md-error-bg);
-      color: var(--md-error);
+      background: var(--danger-bg);
+      color: var(--danger);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -364,32 +321,28 @@
       font-weight: 800;
     }
 
-    /* Mobile Bottom Sticky Bar */
-    .mobile-cart-bar {
+    /* Mobile Floating Bar */
+    .mobile-cart-float {
       display: none;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: var(--md-surface-card);
-      border-top: 1px solid var(--md-border);
-      padding: 0.85rem 1.25rem;
-      z-index: 45;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      z-index: 35;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
-    @media (max-width: 1023px) {
-      .mobile-cart-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    @media (max-width: 979px) {
+      .mobile-cart-float { display: flex; justify-content: space-between; align-items: center; }
     }
 
     /* Modals */
-    .scrim {
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(32, 26, 24, 0.45);
+      background: rgba(0,0,0,0.45);
       backdrop-filter: blur(4px);
       z-index: 100;
       display: none;
@@ -397,165 +350,164 @@
       justify-content: center;
       padding: 1rem;
     }
-    .modal-box {
+    .modal-card {
       background: white;
-      border-radius: 24px;
+      border-radius: 20px;
       max-width: 480px;
       width: 100%;
       max-height: 85vh;
       display: flex;
       flex-direction: column;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-lg);
+      padding: 1.25rem;
     }
-    .input-field {
+    .modal-field {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--md-border);
-      border-radius: 12px;
-      margin-bottom: 0.85rem;
-      font-size: 0.88rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
       outline: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top App Navigation -->
-  <header class="app-bar">
-    <div class="app-bar-inner">
-      <div class="brand-group">
+  <!-- App Header -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand">
         <div class="brand-logo">🥟</div>
         <div>
-          <div class="brand-title">Aashi Momo & Maozhu</div>
-          <div class="brand-subtitle">Smart POS & Sales Hub</div>
+          <div class="brand-name">Aashi Momo & Maozhu</div>
+          <div class="brand-sub">Smart POS & Sales Hub</div>
         </div>
       </div>
-      <div class="top-actions">
-        <button id="sync-btn" class="m3-btn-tonal" onclick="manualSync()">
+      <div class="nav-actions">
+        <button id="sync-chip" class="chip-btn" onclick="manualSync()">
           <span id="sync-icon">☁️</span> <span id="sync-text">Connected</span>
         </button>
-        <button class="m3-btn-tonal" onclick="openMenuModal()">⚙️ Menu</button>
-        <button class="m3-btn-tonal" onclick="openCloudModal()">🔑 Cloud</button>
-        <input type="date" id="date-selector" onchange="setDateView(this.value)" style="border:1px solid var(--md-border); background:var(--md-surface-variant); border-radius:999px; padding:6px 12px; font-weight:700; color:var(--md-text); outline:none; cursor:pointer;" />
+        <button class="chip-btn" onclick="openMenuModal()">⚙️ Menu</button>
+        <button class="chip-btn" onclick="openCloudModal()">🔑 Cloud</button>
+        <input type="date" id="date-picker" onchange="setDateView(this.value)" style="border:1px solid var(--border); background:#f4ede6; border-radius:999px; padding:5px 10px; font-weight:700; color:var(--text); outline:none; cursor:pointer;" />
       </div>
     </div>
   </header>
 
   <!-- Main Shell -->
-  <main class="workspace">
-    <!-- LEFT: CATEGORIES & DISHES -->
+  <main class="app-shell">
+    <!-- LEFT: MENU -->
     <section>
-      <div class="category-container" id="category-strip"></div>
-      <div class="menu-grid" id="menu-dish-grid"></div>
+      <div class="cat-strip" id="cat-strip"></div>
+      <div class="dish-grid" id="dish-grid"></div>
     </section>
 
-    <!-- RIGHT: ORDER SUMMARY & DASHBOARD -->
-    <section id="side-dock">
-      <!-- Active Cart -->
-      <div class="surface-panel" id="cart-panel">
-        <div class="panel-heading">
+    <!-- RIGHT: CART & PERFORMANCE -->
+    <section id="side-panel">
+      <!-- Active Ticket -->
+      <div class="panel" id="cart-panel">
+        <div class="panel-head">
           <h2>Active Ticket</h2>
-          <button onclick="clearTicket()" style="background:none; border:none; color:var(--md-error); font-size:0.8rem; font-weight:700; cursor:pointer;">Clear</button>
+          <button onclick="clearTicket()" style="background:none; border:none; color:var(--danger); font-size:0.8rem; font-weight:700; cursor:pointer;">Clear</button>
         </div>
-        <div class="ticket-scroller" id="ticket-items">
-          <p style="text-align:center; padding: 2rem 0; color:var(--md-text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
+        <div class="ticket-list" id="ticket-list">
+          <p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>
         </div>
-        <div class="bill-checkout-bar">
+        <div class="bill-bar">
           <div>
-            <div style="font-size:0.8rem; color:var(--md-text-muted); font-weight:600;">Total Bill Due</div>
-            <div class="bill-amount-due">৳ <span id="ticket-total">0</span></div>
+            <div style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Bill Due</div>
+            <div class="bill-val">৳ <span id="ticket-total">0</span></div>
           </div>
-          <span id="ticket-count-badge" style="background:var(--md-surface-variant); padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 items</span>
+          <span id="ticket-badge" style="background:#faf2eb; padding:4px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">0 items</span>
         </div>
-        <button id="btn-submit" class="btn-fill-primary" onclick="checkoutSale()" disabled>Record Sale</button>
+        <button id="btn-submit" class="btn-main" onclick="recordSale()" disabled>Record Sale</button>
       </div>
 
       <!-- Daily Sales Summary -->
-      <div class="surface-panel">
-        <div class="panel-heading">
+      <div class="panel">
+        <div class="panel-head">
           <h2>Sales Ledger</h2>
-          <span id="active-date-badge" style="background:var(--md-primary-container); color:var(--md-on-primary-container); padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:800;">Today</span>
+          <span id="date-badge" style="background:var(--primary-container); color:var(--primary-dark); padding:3px 8px; border-radius:999px; font-size:0.75rem; font-weight:800;">Today</span>
         </div>
 
-        <div class="metric-grid">
-          <div class="metric-card">
-            <div class="metric-label">Revenue</div>
-            <div class="metric-val" style="color:var(--md-primary);">৳<span id="metric-revenue">0</span></div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-box-lbl">Revenue</div>
+            <div class="stat-box-val" style="color:var(--primary);">৳<span id="metric-revenue">0</span></div>
           </div>
-          <div class="metric-card">
-            <div class="metric-label">Orders</div>
-            <div class="metric-val" id="metric-orders">0</div>
+          <div class="stat-box">
+            <div class="stat-box-lbl">Orders</div>
+            <div class="stat-box-val" id="metric-orders">0</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-label">Items Sold</div>
-            <div class="metric-val" id="metric-items">0</div>
+          <div class="stat-box">
+            <div class="stat-box-lbl">Items Sold</div>
+            <div class="stat-box-val" id="metric-items">0</div>
           </div>
         </div>
 
         <!-- Segmented Tab -->
-        <div class="segmented-tabs">
-          <button class="segment-tab active" id="tab-orders" onclick="setSubTab('orders')">Order History</button>
-          <button class="segment-tab" id="tab-breakdown" onclick="setSubTab('breakdown')">Item Breakdown</button>
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-orders" onclick="setSubTab('orders')">Order History</button>
+          <button class="tab-btn" id="tab-breakdown" onclick="setSubTab('breakdown')">Item Breakdown</button>
         </div>
 
-        <div style="max-height: 240px; overflow-y: auto;" id="report-view"></div>
+        <div style="max-height: 220px; overflow-y: auto;" id="report-view"></div>
 
-        <div style="display:flex; gap:8px; margin-top:1.1rem;">
-          <button class="m3-btn-tonal" style="flex:1; justify-content:center; padding:10px;" onclick="exportCSV()">📥 Download CSV</button>
-          <button class="m3-btn-tonal" style="color:var(--md-error); border-color:#fecaca; justify-content:center; padding:10px;" onclick="clearDayRecords()">🗑️ Clear Day</button>
+        <div style="display:flex; gap:8px; margin-top:1rem;">
+          <button class="chip-btn" style="flex:1; justify-content:center; padding:9px;" onclick="exportCSV()">📥 Download CSV</button>
+          <button class="chip-btn" style="color:var(--danger); border-color:#fecaca; justify-content:center; padding:9px;" onclick="clearDayOrders()">🗑️ Clear Day</button>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Mobile Bottom Sticky Floating Bar -->
-  <div class="mobile-cart-bar">
+  <!-- Mobile Floating Bottom Bar -->
+  <div class="mobile-cart-float">
     <div>
-      <div style="font-size:0.75rem; color:var(--md-text-muted); font-weight:700;">CURRENT ORDER</div>
-      <div style="font-size:1.25rem; font-weight:900; color:var(--md-primary);">৳ <span id="mobile-ticket-total">0</span></div>
+      <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CURRENT ORDER</div>
+      <div style="font-size:1.25rem; font-weight:900; color:var(--primary);">৳ <span id="mobile-total">0</span></div>
     </div>
-    <button class="btn-fill-primary" style="width:auto; margin-top:0; padding:0.65rem 1.4rem;" onclick="scrollToCart()">View Ticket (<span id="mobile-ticket-count">0</span>)</button>
+    <button class="btn-main" style="width:auto; margin-top:0; padding:0.65rem 1.3rem;" onclick="scrollToCart()">View Ticket (<span id="mobile-count">0</span>)</button>
   </div>
 
-  <!-- MODAL: MANAGE MENU -->
-  <div class="scrim" id="menu-modal">
-    <div class="modal-box">
+  <!-- MODAL: EDIT MENU -->
+  <div class="modal-overlay" id="menu-modal">
+    <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1.1rem; font-weight:800;">Manage Menu Items</h3>
+        <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
         <button onclick="closeMenuModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
       <div style="overflow-y:auto; flex:1;">
-        <div style="background:var(--md-surface); padding:1rem; border-radius:16px; border:1px solid var(--md-border); margin-bottom:1rem;">
-          <div style="font-size:0.82rem; font-weight:700; margin-bottom:6px;">+ Add New Menu Item</div>
-          <input class="input-field" id="new-item-cat" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-suggestions" />
+        <div style="background:var(--surface); padding:0.85rem; border-radius:12px; border:1px solid var(--border); margin-bottom:1rem;">
+          <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">+ Add New Item</div>
+          <input class="modal-field" id="new-item-cat" placeholder="Category (e.g. Momo Corner, Drinks)" list="cat-suggestions" />
           <datalist id="cat-suggestions"></datalist>
-          <input class="input-field" id="new-item-name" placeholder="Item Name (e.g. Cheese Momo)" />
-          <input type="number" class="input-field" id="new-item-price" placeholder="Price (৳)" />
-          <button class="btn-fill-primary" style="margin-top:0;" onclick="saveMenuItem()">Save Item</button>
+          <input class="modal-field" id="new-item-name" placeholder="Item Name (e.g. Cheese Momo)" />
+          <input type="number" class="modal-field" id="new-item-price" placeholder="Price (৳)" />
+          <button class="btn-main" style="margin-top:0;" onclick="saveMenuItem()">Save Item</button>
         </div>
 
-        <div style="font-size:0.82rem; font-weight:700; margin-bottom:6px;">Current Menu Items (Tap ✕ to remove)</div>
+        <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">Current Menu Items (Tap ✕ to remove)</div>
         <div id="editable-menu-items"></div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: CLOUD DATABASE SETUP -->
-  <div class="scrim" id="cloud-modal">
-    <div class="modal-box">
+  <!-- MODAL: CLOUD CREDENTIALS -->
+  <div class="modal-overlay" id="cloud-modal">
+    <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1.1rem; font-weight:800;">Supabase Database Sync</h3>
+        <h3 style="font-size:1rem; font-weight:800;">Cloud Database Settings</h3>
         <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
-      <p style="font-size:0.82rem; color:var(--md-text-muted); margin-bottom:1rem; line-height:1.4;">
-        Connect your free Supabase database once to share sales across phones, laptops, and tablets automatically.
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.4;">
+        Connect your Supabase database once to share sales across phones and PCs automatically.
       </p>
-      <label style="font-size:0.75rem; font-weight:700; color:var(--md-text-muted);">Project URL</label>
-      <input class="input-field" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
-      <label style="font-size:0.75rem; font-weight:700; color:var(--md-text-muted);">Publishable / Anon Key</label>
-      <input class="input-field" id="sb-key-val" placeholder="sb_publishable_... or eyJhbGci..." />
-      <button class="btn-fill-primary" onclick="saveCloudConfig()">Save & Connect</button>
+      <label style="font-size:0.75rem; font-weight:700;">Project URL</label>
+      <input class="modal-field" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
+      <label style="font-size:0.75rem; font-weight:700;">Publishable / Anon Key</label>
+      <input class="modal-field" id="sb-key-val" placeholder="sb_publishable_... or eyJhbGci..." />
+      <button class="btn-main" onclick="saveCloudConfig()">Save & Connect</button>
     </div>
   </div>
 
@@ -606,54 +558,67 @@
       ]
     };
 
-    // Resilient Storage Layer (Handles migration smoothly)
+    // Storage Migration & Safety Layer
     const STORAGE_KEY = 'aashi_sales_master_ledger';
     function loadLedger() {
-      let data = localStorage.getItem(STORAGE_KEY);
-      if (!data) {
-        data = localStorage.getItem('aashi_master_sales_v1') || localStorage.getItem('aashi_ledger_m3') || "{}";
-        localStorage.setItem(STORAGE_KEY, data);
+      try {
+        let raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('aashi_master_sales_v1') || localStorage.getItem('aashi_ledger_m3') || "{}";
+        return JSON.parse(raw);
+      } catch (e) {
+        return {};
       }
-      return JSON.parse(data || "{}");
     }
     function saveLedger(ledger) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(ledger));
       localStorage.setItem('aashi_master_sales_v1', JSON.stringify(ledger));
     }
 
-    let menu = JSON.parse(localStorage.getItem('aashi_menu_custom') || localStorage.getItem('aashi_menu_v2')) || DEFAULT_MENU;
-    let activeCategory = Object.keys(menu)[0] || "";
-    let liveCart = {};
-    let currentSubTab = 'orders';
+    let menu = null;
+    try {
+      menu = JSON.parse(localStorage.getItem('aashi_menu_custom') || localStorage.getItem('aashi_menu_v2'));
+    } catch(e) {}
+    if (!menu || Object.keys(menu).length === 0) menu = DEFAULT_MENU;
 
-    function getTodayStr() {
+    let activeCategory = Object.keys(menu)[0] || "";
+    let activeCart = {};
+    let subTab = 'orders';
+
+    function getTodayString() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-    let viewDate = getTodayStr();
+    let viewDate = getTodayString();
 
     // Supabase
     let supabase = null;
     const sbUrl = localStorage.getItem('aashi_sb_url');
     const sbKey = localStorage.getItem('aashi_sb_key');
-    if (sbUrl && sbKey && window.supabase) {
-      supabase = window.supabase.createClient(sbUrl, sbKey);
+    if (sbUrl && sbKey && window.supabase && typeof window.supabase.createClient === 'function') {
+      try {
+        supabase = window.supabase.createClient(sbUrl, sbKey);
+      } catch(e) {
+        console.warn("Supabase init error:", e);
+      }
     }
 
-    function initApp() {
-      document.getElementById('date-selector').value = viewDate;
-      renderCategories();
-      renderDishes();
-      refreshDashboard();
-      updateSyncUI();
+    function init() {
+      try {
+        document.getElementById('date-picker').value = viewDate;
+        renderCategories();
+        renderDishes();
+        refreshDashboard();
+        updateSyncUI();
 
-      window.addEventListener('online', () => syncAll());
-      if (navigator.onLine && supabase) syncAll();
+        window.addEventListener('online', () => syncAll());
+        if (navigator.onLine && supabase) syncAll();
+      } catch (err) {
+        console.error("Initialization error:", err);
+      }
     }
 
-    // Category and Dishes
+    // Categories and Dishes
     function renderCategories() {
-      const container = document.getElementById('category-strip');
+      const container = document.getElementById('cat-strip');
       const cats = Object.keys(menu);
       if (!cats.includes(activeCategory)) activeCategory = cats[0] || "";
       container.innerHTML = cats.map(c => `
@@ -663,60 +628,60 @@
       document.getElementById('cat-suggestions').innerHTML = cats.map(c => `<option value="${c}">`).join('');
     }
 
-    function selectCategory(cat) {
-      activeCategory = cat;
+    function selectCategory(c) {
+      activeCategory = c;
       renderCategories();
       renderDishes();
     }
 
     function renderDishes() {
-      const grid = document.getElementById('menu-dish-grid');
+      const grid = document.getElementById('dish-grid');
       const items = menu[activeCategory] || [];
       if (items.length === 0) {
-        grid.innerHTML = `<p style="color:var(--md-text-muted); font-size:0.85rem;">No dishes in this category.</p>`;
+        grid.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No items in this category.</p>`;
         return;
       }
       grid.innerHTML = items.map(dish => `
         <div class="dish-card" onclick="addToTicket('${dish.name.replace(/'/g, "\\'")}', ${dish.price})">
-          <div class="dish-title">${dish.name}</div>
-          <div class="dish-bottom">
+          <div class="dish-name">${dish.name}</div>
+          <div class="dish-footer">
             <span class="dish-price">৳${dish.price}</span>
-            <div class="dish-add-circle">+</div>
+            <div class="dish-plus">+</div>
           </div>
         </div>
       `).join('');
     }
 
-    // Ticket / Cart Operations
+    // Cart Operations
     function addToTicket(name, price) {
-      if (!liveCart[name]) liveCart[name] = { price, qty: 0 };
-      liveCart[name].qty += 1;
+      if (!activeCart[name]) activeCart[name] = { price, qty: 0 };
+      activeCart[name].qty += 1;
       renderTicket();
     }
 
     function stepQty(name, delta) {
-      if (!liveCart[name]) return;
-      liveCart[name].qty += delta;
-      if (liveCart[name].qty <= 0) delete liveCart[name];
+      if (!activeCart[name]) return;
+      activeCart[name].qty += delta;
+      if (activeCart[name].qty <= 0) delete activeCart[name];
       renderTicket();
     }
 
     function clearTicket() {
-      liveCart = {};
+      activeCart = {};
       renderTicket();
     }
 
     function renderTicket() {
-      const list = document.getElementById('ticket-items');
+      const list = document.getElementById('ticket-list');
       const totalEl = document.getElementById('ticket-total');
-      const countEl = document.getElementById('ticket-count-badge');
+      const countEl = document.getElementById('ticket-badge');
       const submitBtn = document.getElementById('btn-submit');
-      const mobileTotal = document.getElementById('mobile-ticket-total');
-      const mobileCount = document.getElementById('mobile-ticket-count');
-      const items = Object.keys(liveCart);
+      const mobileTotal = document.getElementById('mobile-total');
+      const mobileCount = document.getElementById('mobile-count');
+      const items = Object.keys(activeCart);
 
       if (items.length === 0) {
-        list.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--md-text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>`;
+        list.innerHTML = `<p style="text-align:center; padding: 2rem 0; color:var(--text-muted); font-size:0.85rem;">🛒 Tap items on the menu to add</p>`;
         totalEl.innerText = "0";
         countEl.innerText = "0 items";
         mobileTotal.innerText = "0";
@@ -727,19 +692,19 @@
 
       let subtotal = 0, units = 0;
       list.innerHTML = items.map(name => {
-        const it = liveCart[name];
-        const lineTot = it.price * it.qty;
-        subtotal += lineTot;
+        const it = activeCart[name];
+        const lineTotal = it.price * it.qty;
+        subtotal += lineTotal;
         units += it.qty;
         return `
           <div class="ticket-row">
             <div>
-              <div class="ticket-name">${name}</div>
-              <div class="ticket-sub">৳${it.price} × ${it.qty} = ৳${lineTot}</div>
+              <strong>${name}</strong><br/>
+              <span style="font-size:0.75rem; color:var(--text-muted);">৳${it.price} × ${it.qty} = ৳${lineTotal}</span>
             </div>
             <div class="stepper">
               <button class="stepper-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', -1)">-</button>
-              <div class="stepper-num">${it.qty}</div>
+              <div class="stepper-val">${it.qty}</div>
               <button class="stepper-btn" onclick="stepQty('${name.replace(/'/g, "\\'")}', 1)">+</button>
             </div>
           </div>
@@ -758,17 +723,17 @@
     }
 
     // Checkout
-    async function checkoutSale() {
-      const items = Object.keys(liveCart).map(name => ({
+    async function recordSale() {
+      const items = Object.keys(activeCart).map(name => ({
         name: name,
-        price: liveCart[name].price,
-        qty: liveCart[name].qty,
-        total: liveCart[name].price * liveCart[name].qty
+        price: activeCart[name].price,
+        qty: activeCart[name].qty,
+        total: activeCart[name].price * activeCart[name].qty
       }));
 
       const grandTotal = items.reduce((s, it) => s + it.total, 0);
       const totalQty = items.reduce((s, it) => s + it.qty, 0);
-      const today = getTodayStr();
+      const today = getTodayString();
 
       const order = {
         id: "ORD-" + Date.now().toString().slice(-4) + Math.floor(Math.random() * 10),
@@ -787,7 +752,7 @@
 
       clearTicket();
       viewDate = today;
-      document.getElementById('date-selector').value = today;
+      document.getElementById('date-picker').value = today;
       refreshDashboard();
       updateSyncUI();
 
@@ -811,7 +776,7 @@
         try {
           await supabase.from('orders').delete().eq('id', orderId);
         } catch (e) {
-          console.warn("Could not delete from Supabase:", e);
+          console.warn("Delete remote error:", e);
         }
       }
 
@@ -819,7 +784,7 @@
       updateSyncUI();
     }
 
-    async function clearDayRecords() {
+    async function clearDayOrders() {
       if (!confirm(`Delete ALL orders for ${viewDate}?`)) return;
 
       const ledger = loadLedger();
@@ -830,7 +795,7 @@
         try {
           await supabase.from('orders').delete().eq('date', viewDate);
         } catch (e) {
-          console.warn("Could not clear day from Supabase:", e);
+          console.warn("Clear day remote error:", e);
         }
       }
 
@@ -838,18 +803,18 @@
       updateSyncUI();
     }
 
-    // Dashboard & Metrics
+    // Dashboard
     function setSubTab(t) {
-      currentSubTab = t;
-      document.getElementById('tab-orders').className = `segment-tab ${t === 'orders' ? 'active' : ''}`;
-      document.getElementById('tab-breakdown').className = `segment-tab ${t === 'breakdown' ? 'active' : ''}`;
+      subTab = t;
+      document.getElementById('tab-orders').className = `tab-btn ${t === 'orders' ? 'active' : ''}`;
+      document.getElementById('tab-breakdown').className = `tab-btn ${t === 'breakdown' ? 'active' : ''}`;
       refreshDashboard();
     }
 
     function setDateView(d) {
       if (!d) return;
       viewDate = d;
-      document.getElementById('active-date-badge').innerText = (viewDate === getTodayStr()) ? "Today" : viewDate;
+      document.getElementById('date-badge').innerText = (viewDate === getTodayString()) ? "Today" : viewDate;
       refreshDashboard();
     }
 
@@ -861,9 +826,9 @@
       const breakdown = {};
 
       orders.forEach(o => {
-        rev += parseFloat(o.orderTotal);
-        units += parseInt(o.totalQty);
-        o.items.forEach(i => {
+        rev += parseFloat(o.orderTotal || 0);
+        units += parseInt(o.totalQty || 0);
+        (o.items || []).forEach(i => {
           if (!breakdown[i.name]) breakdown[i.name] = { qty: 0, revenue: 0 };
           breakdown[i.name].qty += i.qty;
           breakdown[i.name].revenue += i.total;
@@ -876,31 +841,31 @@
 
       const view = document.getElementById('report-view');
       if (orders.length === 0) {
-        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--md-text-muted); font-size:0.8rem;">No sales recorded for this date.</p>`;
+        view.innerHTML = `<p style="text-align:center; padding:1.5rem 0; color:var(--text-muted); font-size:0.8rem;">No sales recorded for this date.</p>`;
         return;
       }
 
-      if (currentSubTab === 'orders') {
+      if (subTab === 'orders') {
         view.innerHTML = orders.map(o => `
-          <div class="record-row">
+          <div class="row-record">
             <div>
-              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--md-text-muted);">${o.time}</span>
+              <strong>${o.id}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">${o.time}</span>
               ${o.synced === false ? '<span style="color:#d97706; font-size:0.7rem; font-weight:800;"> (Offline)</span>' : ''}
               <br/>
-              <span style="font-size:0.75rem; color:#6b7280;">${o.items.map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
+              <span style="font-size:0.75rem; color:#57534e;">${(o.items || []).map(x => `${x.qty}x ${x.name}`).join(', ')}</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <strong style="color:var(--md-primary);">৳${o.orderTotal}</strong>
-              <button class="btn-del-circle" title="Delete" onclick="deleteSingleOrder('${o.id}')">✕</button>
+              <strong style="color:var(--primary);">৳${o.orderTotal}</strong>
+              <button class="btn-trash" title="Delete" onclick="deleteSingleOrder('${o.id}')">✕</button>
             </div>
           </div>
         `).join('');
       } else {
         const sorted = Object.keys(breakdown).sort((a,b) => breakdown[b].qty - breakdown[a].qty);
         view.innerHTML = sorted.map(name => `
-          <div class="record-row">
-            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--md-text-muted);">${breakdown[name].qty} sold</span></div>
-            <strong style="color:var(--md-primary);">৳${breakdown[name].revenue}</strong>
+          <div class="row-record">
+            <div><strong>${name}</strong><br><span style="font-size:0.75rem; color:var(--text-muted);">${breakdown[name].qty} sold</span></div>
+            <strong style="color:var(--primary);">৳${breakdown[name].revenue}</strong>
           </div>
         `).join('');
       }
@@ -911,7 +876,7 @@
       const ledger = loadLedger();
       const list = [];
       Object.keys(ledger).forEach(d => {
-        ledger[d].forEach(o => { if (!o.synced) list.push(o); });
+        (ledger[d] || []).forEach(o => { if (!o.synced) list.push(o); });
       });
       return list;
     }
@@ -929,12 +894,12 @@
         if (!error) {
           const ledger = loadLedger();
           Object.keys(ledger).forEach(d => {
-            ledger[d].forEach(o => { o.synced = true; });
+            (ledger[d] || []).forEach(o => { o.synced = true; });
           });
           saveLedger(ledger);
         }
       } catch (err) {
-        console.warn("Push failed, kept in local queue.", err);
+        console.warn("Push error, queued locally.", err);
       }
       refreshDashboard();
       updateSyncUI();
@@ -975,37 +940,37 @@
     }
 
     function updateSyncUI() {
-      const pill = document.getElementById('sync-btn');
+      const pill = document.getElementById('sync-chip');
       const txt = document.getElementById('sync-text');
       const ico = document.getElementById('sync-icon');
-      const pendingCount = getPending().length;
+      const pending = getPending().length;
 
       if (!supabase) {
         ico.innerText = "⚙️";
         txt.innerText = "No Cloud";
-        pill.className = "m3-btn-tonal";
+        pill.className = "chip-btn";
         return;
       }
 
       if (!navigator.onLine) {
         ico.innerText = "⚠️";
-        txt.innerText = `Offline (${pendingCount})`;
-        pill.className = "m3-btn-tonal pending";
+        txt.innerText = `Offline (${pending})`;
+        pill.className = "chip-btn pending";
         return;
       }
 
-      if (pendingCount > 0) {
+      if (pending > 0) {
         ico.innerText = "🔄";
-        txt.innerText = `Sync (${pendingCount})`;
-        pill.className = "m3-btn-tonal pending";
+        txt.innerText = `Sync (${pending})`;
+        pill.className = "chip-btn pending";
       } else {
         ico.innerText = "☁️";
         txt.innerText = "Connected";
-        pill.className = "m3-btn-tonal synced";
+        pill.className = "chip-btn online";
       }
     }
 
-    // Manage Menu Modal
+    // Menu Management
     function openMenuModal() {
       renderEditableList();
       document.getElementById('menu-modal').style.display = 'flex';
@@ -1013,20 +978,20 @@
     function closeMenuModal() { document.getElementById('menu-modal').style.display = 'none'; }
 
     function renderEditableList() {
-      const box = document.getElementById('editable-menu-items');
+      const container = document.getElementById('editable-menu-items');
       let html = '';
       Object.keys(menu).forEach(cat => {
-        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--md-primary); margin:10px 0 4px 0;">${cat}</div>`;
+        html += `<div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin:8px 0 4px 0;">${cat}</div>`;
         menu[cat].forEach((it, idx) => {
           html += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f8f4ef; font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid #faf5f0; font-size:0.8rem;">
               <span>${it.name} (৳${it.price})</span>
-              <button class="btn-del-circle" style="width:24px; height:24px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
+              <button class="btn-trash" style="width:22px; height:22px;" onclick="deleteMenuItem('${cat}', ${idx})">✕</button>
             </div>
           `;
         });
       });
-      box.innerHTML = html;
+      container.innerHTML = html;
     }
 
     function saveMenuItem() {
@@ -1075,7 +1040,7 @@
       location.reload();
     }
 
-    // Export CSV
+    // CSV Download
     function exportCSV() {
       const ledger = loadLedger();
       const orders = ledger[viewDate] || [];
@@ -1083,7 +1048,7 @@
 
       let csv = "Date,Ticket ID,Time,Item,Price,Quantity,Item Total,Order Total\n";
       orders.forEach(o => {
-        o.items.forEach(i => {
+        (o.items || []).forEach(i => {
           csv += `"${viewDate}","${o.id}","${o.time}","${i.name}",${i.price},${i.qty},${i.total},${o.orderTotal}\n`;
         });
       });
@@ -1094,7 +1059,7 @@
       a.click();
     }
 
-    window.onload = initApp;
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
