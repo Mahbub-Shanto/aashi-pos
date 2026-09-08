@@ -8,8 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -37,7 +35,7 @@
       padding: 0.8rem 1.25rem;
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 10;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
     .top-bar-inner {
@@ -321,21 +319,20 @@
       background: white;
       border-top: 1px solid var(--border);
       padding: 0.75rem 1.25rem;
-      z-index: 35;
+      z-index: 15;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
     @media (max-width: 979px) {
       .mobile-cart-float { display: flex; justify-content: space-between; align-items: center; }
     }
 
-    /* Modals */
+    /* Modals - Clean Fixed Display */
     .modal-overlay {
       position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
+      z-index: 9999;
       align-items: center;
       justify-content: center;
       padding: 1rem;
@@ -349,6 +346,7 @@
       display: flex;
       flex-direction: column;
       padding: 1.25rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .modal-field {
       width: 100%;
@@ -461,7 +459,7 @@
   </div>
 
   <!-- MODAL: EDIT MENU -->
-  <div class="modal-overlay" id="menu-modal">
+  <div class="modal-overlay" id="menu-modal" style="display:none;">
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
         <h3 style="font-size:1rem; font-weight:800;">Manage Menu Items</h3>
@@ -484,14 +482,14 @@
   </div>
 
   <!-- MODAL: CLOUD CREDENTIALS -->
-  <div class="modal-overlay" id="cloud-modal">
+  <div class="modal-overlay" id="cloud-modal" style="display:none;">
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
         <h3 style="font-size:1rem; font-weight:800;">Cloud Database Settings</h3>
         <button onclick="closeCloudModal()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">&times;</button>
       </div>
       <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.4;">
-        Connect your Supabase database once to share sales across phones and PCs automatically.
+        Paste your Supabase Project URL and Key once to sync all your phones and computers.
       </p>
       <label style="font-size:0.75rem; font-weight:700;">Project URL</label>
       <input class="modal-field" id="sb-url-val" placeholder="https://hdxmmseovvsdvdwgwcsu.supabase.co" />
@@ -548,7 +546,6 @@
       ]
     };
 
-    // Storage Migration & Safety Layer
     const STORAGE_KEY = 'aashi_sales_master_ledger';
     function loadLedger() {
       try {
@@ -579,23 +576,14 @@
     }
     let viewDate = getTodayString();
 
-    // Supabase Safe Client Instance
-    let supabase = null;
-    function initSupabase() {
-      const sbUrl = (localStorage.getItem('aashi_sb_url') || '').trim();
-      const sbKey = (localStorage.getItem('aashi_sb_key') || '').trim();
-      if (sbUrl && sbKey && window.supabase && typeof window.supabase.createClient === 'function') {
-        try {
-          supabase = window.supabase.createClient(sbUrl, sbKey);
-        } catch(e) {
-          console.warn("Supabase init error:", e);
-          supabase = null;
-        }
-      }
+    // Supabase Pure REST Client (No freezing SDKs)
+    function getCloudConfig() {
+      const url = (localStorage.getItem('aashi_sb_url') || '').trim();
+      const key = (localStorage.getItem('aashi_sb_key') || '').trim();
+      return (url && key) ? { url, key } : null;
     }
 
     function init() {
-      initSupabase();
       document.getElementById('date-picker').value = viewDate;
       renderCategories();
       renderDishes();
@@ -603,10 +591,10 @@
       updateSyncUI();
 
       window.addEventListener('online', () => syncAll());
-      if (navigator.onLine && supabase) syncAll();
+      if (navigator.onLine && getCloudConfig()) syncAll();
     }
 
-    // Categories and Dishes
+    // Categories & Dishes
     function renderCategories() {
       const container = document.getElementById('cat-strip');
       const cats = Object.keys(menu);
@@ -746,7 +734,7 @@
       refreshDashboard();
       updateSyncUI();
 
-      if (supabase && navigator.onLine) {
+      if (getCloudConfig() && navigator.onLine) {
         await pushPending();
       }
     }
@@ -762,9 +750,13 @@
         saveLedger(ledger);
       }
 
-      if (supabase && navigator.onLine) {
+      const conf = getCloudConfig();
+      if (conf && navigator.onLine) {
         try {
-          await supabase.from('orders').delete().eq('id', orderId);
+          await fetch(`${conf.url}/rest/v1/orders?id=eq.${orderId}`, {
+            method: 'DELETE',
+            headers: { 'apikey': conf.key, 'Authorization': `Bearer ${conf.key}` }
+          });
         } catch (e) {
           console.warn("Delete remote error:", e);
         }
@@ -781,9 +773,13 @@
       delete ledger[viewDate];
       saveLedger(ledger);
 
-      if (supabase && navigator.onLine) {
+      const conf = getCloudConfig();
+      if (conf && navigator.onLine) {
         try {
-          await supabase.from('orders').delete().eq('date', viewDate);
+          await fetch(`${conf.url}/rest/v1/orders?date=eq.${viewDate}`, {
+            method: 'DELETE',
+            headers: { 'apikey': conf.key, 'Authorization': `Bearer ${conf.key}` }
+          });
         } catch (e) {
           console.warn("Clear day remote error:", e);
         }
@@ -861,7 +857,7 @@
       }
     }
 
-    // Cloud Sync
+    // Cloud Sync Engine via fetch REST API
     function getPending() {
       const ledger = loadLedger();
       const list = [];
@@ -872,7 +868,8 @@
     }
 
     async function pushPending() {
-      if (!supabase || !navigator.onLine) return;
+      const conf = getCloudConfig();
+      if (!conf || !navigator.onLine) return;
       const pending = getPending();
       if (pending.length === 0) return;
 
@@ -880,8 +877,19 @@
         const rows = pending.map(o => ({
           id: o.id, date: o.date, time: o.time, items: o.items, totalQty: o.totalQty, orderTotal: o.orderTotal
         }));
-        const { error } = await supabase.from('orders').upsert(rows);
-        if (!error) {
+
+        const res = await fetch(`${conf.url}/rest/v1/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': conf.key,
+            'Authorization': `Bearer ${conf.key}`,
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify(rows)
+        });
+
+        if (res.ok) {
           const ledger = loadLedger();
           Object.keys(ledger).forEach(d => {
             (ledger[d] || []).forEach(o => { o.synced = true; });
@@ -889,17 +897,24 @@
           saveLedger(ledger);
         }
       } catch (err) {
-        console.warn("Push error, queued locally.", err);
+        console.warn("Push error:", err);
       }
       refreshDashboard();
       updateSyncUI();
     }
 
     async function pullCloud() {
-      if (!supabase || !navigator.onLine) return;
+      const conf = getCloudConfig();
+      if (!conf || !navigator.onLine) return;
       try {
-        const { data, error } = await supabase.from('orders').select('*');
-        if (!error && data) {
+        const res = await fetch(`${conf.url}/rest/v1/orders?select=*`, {
+          headers: {
+            'apikey': conf.key,
+            'Authorization': `Bearer ${conf.key}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
           const ledger = loadLedger();
           data.forEach(co => {
             if (!ledger[co.date]) ledger[co.date] = [];
@@ -921,7 +936,7 @@
     }
 
     async function manualSync() {
-      if (!supabase) {
+      if (!getCloudConfig()) {
         openCloudModal();
         return;
       }
@@ -935,7 +950,7 @@
       const ico = document.getElementById('sync-icon');
       const pending = getPending().length;
 
-      if (!supabase) {
+      if (!getCloudConfig()) {
         ico.innerText = "⚙️";
         txt.innerText = "Local Mode";
         pill.className = "chip-btn";
@@ -960,7 +975,7 @@
       }
     }
 
-    // Menu Management
+    // Menu Management Modals
     function openMenuModal() {
       renderEditableList();
       document.getElementById('menu-modal').style.display = 'flex';
@@ -1022,17 +1037,14 @@
     function closeCloudModal() { document.getElementById('cloud-modal').style.display = 'none'; }
 
     function saveCloudConfig() {
-      const url = document.getElementById('sb-url-val').value.trim();
+      const url = document.getElementById('sb-url-val').value.trim().replace(/\/+$/, '');
       const key = document.getElementById('sb-key-val').value.trim();
       localStorage.setItem('aashi_sb_url', url);
       localStorage.setItem('aashi_sb_key', key);
       
       closeCloudModal();
-      
-      // Connect in-memory without reloading the entire page
-      initSupabase();
       updateSyncUI();
-      if (supabase && navigator.onLine) {
+      if (getCloudConfig() && navigator.onLine) {
         syncAll();
       }
     }
@@ -1056,6 +1068,7 @@
       a.click();
     }
 
+    // Run immediately when loaded
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
