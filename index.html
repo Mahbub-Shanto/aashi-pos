@@ -47,11 +47,7 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; }
     .brand-logo {
       background: var(--primary);
       color: white;
@@ -326,7 +322,7 @@
       .mobile-cart-float { display: flex; justify-content: space-between; align-items: center; }
     }
 
-    /* Modals - Clean Fixed Display */
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -576,7 +572,6 @@
     }
     let viewDate = getTodayString();
 
-    // Supabase Pure REST Client (No freezing SDKs)
     function getCloudConfig() {
       const url = (localStorage.getItem('aashi_sb_url') || '').trim();
       const key = (localStorage.getItem('aashi_sb_key') || '').trim();
@@ -739,7 +734,7 @@
       }
     }
 
-    // Delete Handlers
+    // Deletion Operations with Cloud Deletion
     async function deleteSingleOrder(orderId) {
       if (!confirm(`Delete order ${orderId}?`)) return;
 
@@ -857,7 +852,7 @@
       }
     }
 
-    // Cloud Sync Engine via fetch REST API
+    // Pending Offline Orders Helper
     function getPending() {
       const ledger = loadLedger();
       const list = [];
@@ -867,6 +862,7 @@
       return list;
     }
 
+    // Push local unsynced orders to Supabase
     async function pushPending() {
       const conf = getCloudConfig();
       if (!conf || !navigator.onLine) return;
@@ -903,6 +899,7 @@
       updateSyncUI();
     }
 
+    // TRUE TWO-WAY MIRROR SYNC (Deletions on other devices are purged locally)
     async function pullCloud() {
       const conf = getCloudConfig();
       if (!conf || !navigator.onLine) return;
@@ -914,13 +911,35 @@
           }
         });
         if (res.ok) {
-          const data = await res.json();
+          const cloudOrders = await res.json();
           const ledger = loadLedger();
-          data.forEach(co => {
-            if (!ledger[co.date]) ledger[co.date] = [];
-            const exists = ledger[co.date].some(lo => lo.id === co.id);
-            if (!exists) ledger[co.date].unshift({ ...co, synced: true });
+          const cloudIdSet = new Set(cloudOrders.map(o => o.id));
+
+          // 1. Remove locally any order that was deleted from Supabase (unless created offline and waiting to push)
+          Object.keys(ledger).forEach(date => {
+            ledger[date] = ledger[date].filter(localOrder => {
+              if (localOrder.synced === false) return true; // keep unsynced local creations
+              return cloudIdSet.has(localOrder.id);         // remove if deleted from cloud
+            });
+            if (ledger[date].length === 0) delete ledger[date];
           });
+
+          // 2. Insert or update cloud orders into local ledger
+          cloudOrders.forEach(co => {
+            if (!ledger[co.date]) ledger[co.date] = [];
+            const idx = ledger[co.date].findIndex(lo => lo.id === co.id);
+            if (idx === -1) {
+              ledger[co.date].unshift({ ...co, synced: true });
+            } else {
+              ledger[co.date][idx] = { ...co, synced: true };
+            }
+          });
+
+          // 3. Sort orders newest first
+          Object.keys(ledger).forEach(date => {
+            ledger[date].sort((a, b) => b.id.localeCompare(a.id));
+          });
+
           saveLedger(ledger);
           refreshDashboard();
         }
@@ -1068,7 +1087,6 @@
       a.click();
     }
 
-    // Run immediately when loaded
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
